@@ -3,7 +3,7 @@
 # If not running interactively, don't do anything
 case $- in
     *i*) ;;
-      *) return;;
+    *) return;;
 esac
 
 # don't put duplicate lines or lines starting with space in the history.
@@ -52,12 +52,12 @@ force_color_prompt=yes
 
 if [ -n "$force_color_prompt" ]; then
     if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
-	# We have color support; assume it's compliant with Ecma-48
-	# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
-	# a case would tend to support setf rather than setaf.)
-	color_prompt=yes
+        # We have color support; assume it's compliant with Ecma-48
+        # (ISO/IEC-6429). (Lack of such support is extremely rare, and such
+        # a case would tend to support setf rather than setaf.)
+        color_prompt=yes
     else
-	color_prompt=
+        color_prompt=
     fi
 fi
 
@@ -71,11 +71,11 @@ unset color_prompt force_color_prompt
 
 # If this is an xterm set the title to user@host:dir
 case "$TERM" in
-xterm*|rxvt*)
-    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
-    ;;
-*)
-    ;;
+    xterm*|rxvt*)
+        PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
+        ;;
+    *)
+        ;;
 esac
 
 # enable color support of ls and also add handy aliases
@@ -111,92 +111,23 @@ fi
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
 # sources /etc/bash.bashrc).
 if ! shopt -oq posix; then
-  if [ -f /usr/share/bash-completion/bash_completion ]; then
-    . /usr/share/bash-completion/bash_completion
-  elif [ -f /etc/bash_completion ]; then
-    . /etc/bash_completion
-  fi
+    if [ -f /usr/share/bash-completion/bash_completion ]; then
+        . /usr/share/bash-completion/bash_completion
+    elif [ -f /etc/bash_completion ]; then
+        . /etc/bash_completion
+    fi
 fi
 
-# Custom commands
-# Encrypt a folder into a symmetrical GPG archive
-encrypt_archive_symmetrical_gpg() {
-	local GPG_OPTS=""
-	local OPTIND=1  # Reset getopts index for function calls
-	
-	# Parse flags
-	while getopts "f" opt; do
-		case "$opt" in
-			f) GPG_OPTS="--no-symkey-cache" ;;
-			*) echo "Usage: enc-sym [-f] <folder_path>"; return 1 ;;
-		esac
-	done
-	shift $((OPTIND-1)) # Remove the flags from the argument list
 
-	local folder_path="$1"
-	local output_name=$(basename "$folder_path")
-	if [[ -z "$folder_path" ]]; then
-		echo "Usage: enc-sym [-f] <folder_path>"
-		return 1
-	fi
 
-	# -c uses symmetric encryption
-	# --pbkdf2 specifies the password-based key derivation function
-	tar -cf - "$folder_path" | gpg $GPG_OPTS -c -o "$output_name.tar.gpg"
-	
-	local status_tar=${PIPESTATUS[0]}
-	local status_gpg=${PIPESTATUS[1]}
-	if [[ $status_tar -eq 0 && $status_gpg -eq 0 ]]; then
-		echo "Archive encrypted successfully as $output_name.tar.gpg."
-		echo "Please delete the original directory."
-	fi
-}
-alias enc='encrypt_archive_symmetrical_gpg'
 
-# Decrypt and extract a symmetrical GPG archive
-decrypt_extract_symmetrical_gpg() {
-	local GPG_OPTS=""
-	local OPTIND=1
-
-	# Parse flags
-	while getopts "f" opt; do
-		case "$opt" in
-			f) GPG_OPTS="--no-symkey-cache" ;;
-			*) echo "Usage: dec-sym [-f] <encrypted_data_path>"; return 1 ;;
-		esac
-	done
-	shift $((OPTIND-1))
-
-	local encrypted_data_path="$1"
-	if [[ -z "encrypted_data_path" ]]; then
-		echo "Usage: dec-sym [-f] <encrypted_data_path>"
-		return 1
-	fi
-	
-	# -d decrypts the file and pipes the stdout directly to tar
-	gpg $GPG_OPTS -d "$encrypted_data_path" | tar -xf -
-	
-	local status_gpg=${PIPESTATUS[0]}
-    local status_tar=${PIPESTATUS[1]}
-	if [[ $status_gpg -eq 0 && $status_tar -eq 0 ]]; then
-		echo "Archive decrypted and extracted to current directory."
-		echo "Remember to re-encrypt this file after you are done."
-	fi
-}
-alias dec='decrypt_extract_symmetrical_gpg'
-
-# makes cd also run ls
-cd() {
-  builtin cd $@
-  ls
-}
-
-# Set defaults
+### Set defaults
 export EDITOR="nvim"
 export TERMINAL="konsole"
 export VISUAL="$EDITOR"
 
-# Shortcuts
+
+### Shortcuts
 export dt=$HOME/Desktop
 export dl=$HOME/Downloads
 export dc=$HOME/Documents
@@ -211,31 +142,27 @@ export bin="$HOME/.local/bin"
 export prj="$HOME/Documents/Projects"
 export tch="$HOME/src/scratch"
 
+
+
+
 # Shell configuration
 shopt -u cdable_vars
 shopt -s direxpand
 
-# Simple aliases
+### Simple aliases
 alias ll='ls -alFh'
 alias la='ls -A'
-alias l='ls -CF'
 alias d='cd'
 alias v='nvim'
+alias trash='trash-put'
+alias restore='trash-restore'
+alias glow='glow -p'
 
 # other useful flags:
 #   tree: I ignore-pat, L depth, i (no indent lines), f(ull relative path) 
 
-# Less simple aliases
-# dammit i cant get autocomplete working
-# FUCK BASH
-skconfig() { 
-  git --git-dir="$HOME/.skconfig/" --work-tree="$HOME" "$@"
-}
 
-# -R (allow color display, required to work with bat)
-alias lesser="less -R"
-alias bat='batcat --color=always'
-
+### Less simple aliases
 # literally just a filter (-o allows mapping to output)
 # ps -e is equal to ps aux btw (list all processes: you probably want to run this thru grep -E)
 alias pse="ps -e -o pid,command"
@@ -245,6 +172,130 @@ alias ptouch="install /dev/null -m"
 
 # useful flags: o (nly match), n (line numbers), E (use extended regex), v (invert match)
 alias grep='grep --color=auto -E'
+
+# -R (allow color display, required to work with bat)
+bat() {
+    batcat --color=always "$@" | less -R
+}
+
+# double reverses a string so you can cut from the end
+# bro == echo ok bro | rcut -c-3
+rcut() {
+    rev | cut "$@" | rev
+}
+
+# Copies output of last command to clipboard
+# Change this on wayland lol
+clip() {
+    tr -d '\n' | xclip -selection clipboard
+    echo Copied to clipboard.
+}
+alias copy="clip"
+
+
+
+
+### Scripts
+__bridge="/tmp/.uid${UID}_${USER}.x"
+x() {
+    local output
+    output=$(xargs "$@")
+
+    echo "$output" > "$__bridge"
+    echo "$output"
+}
+
+xd() {
+    x dirname
+}
+
+xc() {
+    if [ ! -s "$__bridge" ]; then
+        echo Failed to read from bridge.
+        return 1
+    fi
+
+    local target
+    target=$(head "$__bridge")
+    builtin cd "$target" && ls
+}
+
+xcd() {
+    which "$@" | xd && xc
+}
+
+xcr() {
+    realpath "$@" | xd && xc
+}
+
+# Encrypt a folder into a symmetrical GPG archive
+encrypt_archive_symmetrical_gpg() {
+    local GPG_OPTS=""
+    local OPTIND=1  # Reset getopts index for function calls
+
+    # Parse flags
+    while getopts "f" opt; do
+        case "$opt" in
+            f) GPG_OPTS="--no-symkey-cache" ;;
+            *) echo "Usage: enc-sym [-f] <folder_path>"; return 1 ;;
+        esac
+    done
+
+    shift $((OPTIND-1)) # Remove the flags from the argument list
+
+    local folder_path="$1"
+    local output_name=$(basename "$folder_path")
+    if [[ -z "$folder_path" ]]; then
+        echo "Usage: enc-sym [-f] <folder_path>"
+        return 1
+    fi
+
+    # -c uses symmetric encryption
+    # --pbkdf2 specifies the password-based key derivation function
+    tar -cf - "$folder_path" | gpg $GPG_OPTS -c -o "$output_name.tar.gpg"
+
+    local status_tar=${PIPESTATUS[0]}
+    local status_gpg=${PIPESTATUS[1]}
+    if [[ $status_tar -eq 0 && $status_gpg -eq 0 ]]; then
+        echo "Archive encrypted successfully as $output_name.tar.gpg."
+        echo "Please delete the original directory."
+    fi
+}
+alias enc='encrypt_archive_symmetrical_gpg'
+
+# Decrypt and extract a symmetrical GPG archive
+decrypt_extract_symmetrical_gpg() {
+    local GPG_OPTS=""
+    local OPTIND=1
+
+    # Parse flags
+    while getopts "f" opt; do
+        case "$opt" in
+            f) GPG_OPTS="--no-symkey-cache" ;;
+            *) echo "Usage: dec-sym [-f] <encrypted_data_path>"; return 1 ;;
+        esac
+    done
+    shift $((OPTIND-1))
+
+    local encrypted_data_path="$1"
+    if [[ -z "encrypted_data_path" ]]; then
+        echo "Usage: dec-sym [-f] <encrypted_data_path>"
+        return 1
+    fi
+
+    # -d decrypts the file and pipes the stdout directly to tar
+    gpg $GPG_OPTS -d "$encrypted_data_path" | tar -xf -
+
+    local status_gpg=${PIPESTATUS[0]}
+    local status_tar=${PIPESTATUS[1]}
+    if [[ $status_gpg -eq 0 && $status_tar -eq 0 ]]; then
+        echo "Archive decrypted and extracted to current directory."
+        echo "Remember to re-encrypt this file after you are done."
+    fi
+}
+alias dec='decrypt_extract_symmetrical_gpg'
+
+
 
 # PATH modification
 export PATH="$HOME/.local/bin:$PATH"
