@@ -21,7 +21,7 @@
             }
         ],
         "target_uinput": "keyboard",
-        "output_symbol": "if_eq($A, 1, key_up(Alt_R).key(backslash)).\nset(A, 1).set(AL, 1).hold_keys(Alt_L).set(AL, 0).set(A, $AR)",
+        "output_symbol": "if_eq($A, 1, key_up(Alt_R).key(backslash), key_down(Alt_L)).\nset(A, 1).set(AL, 1).hold().key_up(Alt_L).set(AL, 0).set(A, $AR)",
         "name": "Alt Toggle (L)",
         "mapping_type": "key_macro"
     },
@@ -34,7 +34,7 @@
             }
         ],
         "target_uinput": "keyboard",
-        "output_symbol": "if_eq($S, 1, key_up(Shift_R).\nkey(backslash).key(parenleft).\nkey(backslash).key(parenright).\nkey(Left).key(Left)).\nset(S, 1).set(SR, 1).hold_keys(Shift_R).set(SR, 0).set(S, $SL)",
+        "output_symbol": "if_eq($S, 1, key_up(Shift_L).\nkey(backslash).key(parenleft).\nkey(backslash).key(parenright).\nkey(Left).key(Left), key_down(Shift_R)).\nset(S, 1).set(SR, 1).hold().key_up(Shift_R).set(SR, 0).set(S, $SL)",
         "name": "Shift Toggle (R)",
         "mapping_type": "key_macro"
     },
@@ -99,7 +99,7 @@
             }
         ],
         "target_uinput": "keyboard",
-        "output_symbol": "if_eq($S, 1, key_up(Shift_R).\nkey(backslash).key(parenleft).\nkey(backslash).key(parenright).\nkey(Left).key(Left)).\nset(S, 1).set(SL, 1).hold_keys(Shift_L).set(SL, 0).set(S, $SR)",
+        "output_symbol": "if_eq($S, 1, key_up(Shift_R).\nkey(backslash).key(parenleft).\nkey(backslash).key(parenright).\nkey(Left).key(Left), key_down(Shift_L)).\nset(S, 1).set(SL, 1).hold().key_up(Shift_L).set(SL, 0).set(S, $SR)",
         "name": "Shift Toggle (L)",
         "mapping_type": "key_macro"
     },
@@ -112,7 +112,7 @@
             }
         ],
         "target_uinput": "keyboard",
-        "output_symbol": "if_eq($A, 1, key_up(Alt_L).key(backslash)).\nset(A, 1).set(AR, 1).hold_keys(Alt_R).set(AR, 0).set(A, $AL)",
+        "output_symbol": "if_eq($A, 1, key_up(Alt_L).key(backslash), key_down(Alt_R)).\nset(A, 1).set(AR, 1).hold().key_up(Alt_R).set(AR, 0).set(A, $AL)",
         "name": "Alt Toggle (R)",
         "mapping_type": "key_macro"
     },
