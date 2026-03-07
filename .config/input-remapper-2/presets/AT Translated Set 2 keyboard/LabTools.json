@@ -73,7 +73,7 @@
             }
         ],
         "target_uinput": "keyboard",
-        "output_symbol": "if_eq($S, 1,\t\t\t\t\nif_eq($C, 1,\nkey_up(Control_L).key(Home).key(End).key(Delete).\nkey_up(Shift_L).key_up(Shift_R),\nhold_keys(BackSpace)),\nhold_keys(BackSpace))",
+        "output_symbol": "if_eq($S, 1,\t\t\t\t\nif_eq($C, 1,\nkey_up(Control_L).key_up(Shift_L).key(Home).key_down(Shift_L).key(End).\nkey(Delete).key_up(Shift_L),\nhold_keys(BackSpace)),\nhold_keys(BackSpace))",
         "name": "Delete Line",
         "mapping_type": "key_macro"
     },
@@ -86,7 +86,7 @@
             }
         ],
         "target_uinput": "keyboard",
-        "output_symbol": "if_eq($C, 1,\nif_capslock(key(Caps_Lock)).\nkey_up(Control_L).key(Escape),\nhold_keys(h))",
+        "output_symbol": "if_eq($C, 1, if_capslock(key(Caps_Lock))\n.key_up(Control_L).key(Escape),\nhold_keys(h))",
         "name": "Escape Rebind",
         "mapping_type": "key_macro"
     },
@@ -142,6 +142,78 @@
         "target_uinput": "keyboard",
         "output_symbol": "THINK TWICE BEFORE DOING MODIFIER KEYDOWN IN A IN ANY MACRO!\nSome applications listen for that (think firefox!)\n\nONLY CTRL L WILL TOGGLE KEYBINDS!\nI use it a lot, and I really don't want to send .key_up(Ctrl_L).key_up(Ctrl_R)\neverytime I want to do anything\n\n\n<Alt-Alt> = \\\n\n<Shift-Shift> = generate fighting one eyed kirby and places you inside it\n\n<C-h> = <Esc> (disables caps lock if its on)\n<C-,> = <Home> (shift compatible to select a line)\n<C-.> = <End>  (^)\n\n<C-S-BS> = Delete whole line\n",
         "name": "README",
+        "mapping_type": "key_macro"
+    },
+    {
+        "input_combination": [
+            {
+                "type": 1,
+                "code": 56,
+                "origin_hash": "0c64c979fda14716c05663b585a0cbd9"
+            },
+            {
+                "type": 1,
+                "code": 36,
+                "origin_hash": "0c64c979fda14716c05663b585a0cbd9"
+            }
+        ],
+        "target_uinput": "keyboard",
+        "output_symbol": "key_up(Alt_L).hold_keys(KP_Down)",
+        "name": "Vim - Alt L + j",
+        "mapping_type": "key_macro"
+    },
+    {
+        "input_combination": [
+            {
+                "type": 1,
+                "code": 56,
+                "origin_hash": "0c64c979fda14716c05663b585a0cbd9"
+            },
+            {
+                "type": 1,
+                "code": 35,
+                "origin_hash": "0c64c979fda14716c05663b585a0cbd9"
+            }
+        ],
+        "target_uinput": "keyboard",
+        "output_symbol": "key_up(Alt_L).hold_keys(KP_Left)",
+        "name": "Vim - Alt L + h",
+        "mapping_type": "key_macro"
+    },
+    {
+        "input_combination": [
+            {
+                "type": 1,
+                "code": 56,
+                "origin_hash": "0c64c979fda14716c05663b585a0cbd9"
+            },
+            {
+                "type": 1,
+                "code": 37,
+                "origin_hash": "0c64c979fda14716c05663b585a0cbd9"
+            }
+        ],
+        "target_uinput": "keyboard",
+        "output_symbol": "key_up(Alt_L).hold_keys(KP_Up)",
+        "name": "Vim - Alt L + k",
+        "mapping_type": "key_macro"
+    },
+    {
+        "input_combination": [
+            {
+                "type": 1,
+                "code": 56,
+                "origin_hash": "0c64c979fda14716c05663b585a0cbd9"
+            },
+            {
+                "type": 1,
+                "code": 38,
+                "origin_hash": "0c64c979fda14716c05663b585a0cbd9"
+            }
+        ],
+        "target_uinput": "keyboard",
+        "output_symbol": "key_up(Alt_L).hold_keys(KP_Right)",
+        "name": "Vim - Alt L + l",
         "mapping_type": "key_macro"
     }
 ]
