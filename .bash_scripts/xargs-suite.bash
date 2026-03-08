@@ -12,6 +12,10 @@ x() {
 	echo "$output"
 }
 
+xd() {
+	x dirname
+}
+
 xp() {
 	x realpath
 }

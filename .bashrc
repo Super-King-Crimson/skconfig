@@ -104,12 +104,16 @@ bind '"\e[1;2F": kill-line'
 
 ### Aliases and functions
 alias ls='ls --color=auto -AF'
+alias la='command ls --color=auto -a'
 alias l='command ls --color=auto'
 alias ll='command ls -alFh'
 alias cp='cp -r'
 alias d='cd'
 alias v='nvim '
 alias quit='exit'
+
+# the vim pill has been devoured
+alias ':q'="exit"
 
 # ps -e == ps aux btw (use w/grep to find evil processes)
 alias pse="ps -e -o pid,command"
