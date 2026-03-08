@@ -215,5 +215,3 @@ require("mini.snippets").setup({
     stop = "<C-c>",
   }
 })
-
-return {}

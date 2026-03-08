@@ -79,5 +79,3 @@ vim.keymap.set("n", "<LocalLeader><LocalLeader>d", function()
   vim.cmd("tab sp")
   miniFileToggle()
 end, { desc = "Explore current directory in new tab" })
-
-return {}

@@ -11,8 +11,6 @@ require("skc.keymaps")
 require("skc.options")
 require("skc.commands")
 
--- Bootstrap lazy.nvim
--- print("Hello)
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
   local lazyrepo = "https://github.com/folke/lazy.nvim.git"
@@ -29,26 +27,18 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
--- Setup lazy.nvim
+---@diagnostic disable missing-parameter
 require("lazy").setup({
   spec = {
-    -- import your plugins
     { import = "skc/plugins" },
   },
 
   -- colorscheme that will be used when installing plugins.
   install = { colorscheme = { "habamax" } },
+
   -- automatically check for plugin updates
+  change_detection = { enabled = false, notify = false, },
   checker = { enabled = false },
-  change_detection = {
-    enabled = false,
-    notify = false,
-  }
 })
 
 vim.cmd.colorscheme("moonfly")
---
--- vim.opt.rtp:append("~/src")
---
--- -- lsp testing of DOOOOOOM
--- require("hi").bye("hi", 5);

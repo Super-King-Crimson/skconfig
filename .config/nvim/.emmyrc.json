@@ -1,27 +1,22 @@
 {
-  "$schema": "https://raw.githubusercontent.com/EmmyLuaLs/emmylua-analyzer-rust/refs/heads/main/crates/emmylua_code_analysis/resources/schema.json",
   "completion": {
-    "enable": true,
-    "callSnippet": false
+    "callSnippet": false,
+    "enable": true
   },
   "runtime": {
-    "extensions": [
-      ".lua"
-    ],
+    "version": "LuaJIT",
     "requirePattern": [
       "lua/?.lua",
       "lua/?/init.lua"
     ],
-    "version": "LuaJIT"
+    "extensions": [
+      ".lua"
+    ]
   },
+  "$schema": "https://raw.githubusercontent.com/EmmyLuaLs/emmylua-analyzer-rust/refs/heads/main/crates/emmylua_code_analysis/resources/schema.json",
   "workspace": {
-    "ignoreDir": [
-      "after",
-      "snippets",
-      "lsp"
-    ],
     "library": [
-      "/opt/nvim-linux-x86_64/share/nvim/runtime",
+      "/tmp/.mount_nvimiiojGB/usr/share/nvim/runtime",
       "/home/skc/.local/share/nvim/lazy/blink.cmp",
       "/home/skc/.local/share/nvim/lazy/conform.nvim",
       "/home/skc/.local/share/nvim/lazy/fidget.nvim",
@@ -40,13 +35,17 @@
       "/home/skc/.local/share/nvim/lazy/plenary.nvim",
       "/home/skc/.local/share/nvim/lazy/render-markdown.nvim",
       "/home/skc/.local/share/nvim/lazy/roslyn.nvim",
-      "/home/skc/.local/share/nvim/lazy/tabby.nvim",
       "/home/skc/.local/share/nvim/lazy/telescope-fzf-native.nvim",
       "/home/skc/.local/share/nvim/lazy/telescope-ui-select.nvim",
       "/home/skc/.local/share/nvim/lazy/telescope.nvim",
       "/home/skc/.local/share/nvim/lazy/toggleterm.nvim",
       "/home/skc/.local/share/nvim/lazy/tokyonight.nvim",
       "/home/skc/.local/share/nvim/lazy/which-key.nvim"
+    ],
+    "ignoreDir": [
+      "after",
+      "snippets",
+      "lsp"
     ]
   },
   "diagnostics": {

@@ -24,9 +24,7 @@ local ENSURE_INSTALLED = {
     "roslyn",
   },
 
-  linters = {
-    "gdtoolkit",
-  },
+  linters = {},
   formatters = {},
   debuggers = {},
 }

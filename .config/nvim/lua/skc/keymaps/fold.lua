@@ -1,4 +1,4 @@
-vim.keymap.set("n", "<Leader>ff", "za", { desc = "Toggle fold under cursor recursively" })
+vim.keymap.set("n", "<Leader>ff", "za", { desc = "Toggle fold under cursor" })
 vim.keymap.set("n", "<Leader>fF", "zA", { desc = "Toggle fold under cursor recursively" })
 
 vim.keymap.set("n", "<Leader>fa", "zM", { desc = "[F]old [A]ll" })

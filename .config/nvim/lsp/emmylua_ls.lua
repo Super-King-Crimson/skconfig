@@ -8,7 +8,7 @@ local schema =
 "https://raw.githubusercontent.com/EmmyLuaLs/emmylua-analyzer-rust/refs/heads/main/crates/emmylua_code_analysis/resources/schema.json"
 
 -- toggle this if the messages get annoying
-local silent_mode = false
+local silent_mode = true
 local debug_mode = true
 
 -- alternatively, just disable backups
