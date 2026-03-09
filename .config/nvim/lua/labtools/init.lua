@@ -1,3 +1,5 @@
+-- VIM.FS.NORMALIZE()
+-- VIM.FS.FIND()
 local LabTools = {}
 
 local silent = false

@@ -1,15 +1,25 @@
 {
+  "$schema": "https://raw.githubusercontent.com/EmmyLuaLs/emmylua-analyzer-rust/refs/heads/main/crates/emmylua_code_analysis/resources/schema.json",
+  "completion": {
+    "enable": true,
+    "callSnippet": false
+  },
   "runtime": {
+    "version": "LuaJIT",
     "requirePattern": [
       "lua/?.lua",
       "lua/?/init.lua"
     ],
-    "version": "LuaJIT",
     "extensions": [
       ".lua"
     ]
   },
   "diagnostics": {
+    "severity": {
+      "return-type-mismatch": "error",
+      "access-invisible": "error",
+      "unused": "warning"
+    },
     "disable": [
       "invert-if",
       "deprecated",
@@ -21,12 +31,7 @@
       "param-type-not-match",
       "redefined-local",
       "unreachable-code"
-    ],
-    "severity": {
-      "unused": "warning",
-      "return-type-mismatch": "error",
-      "access-invisible": "error"
-    }
+    ]
   },
   "workspace": {
     "ignoreDir": [
@@ -35,7 +40,7 @@
       "lsp"
     ],
     "library": [
-      "/tmp/.mount_nvimgNFnme/usr/share/nvim/runtime",
+      "/home/skc/.local/bin/neovim/usr/share/nvim/runtime",
       "/home/skc/.local/share/nvim/lazy/blink.cmp",
       "/home/skc/.local/share/nvim/lazy/ccc.nvim",
       "/home/skc/.local/share/nvim/lazy/conform.nvim",
@@ -63,10 +68,5 @@
       "/home/skc/.local/share/nvim/lazy/volt",
       "/home/skc/.local/share/nvim/lazy/which-key.nvim"
     ]
-  },
-  "completion": {
-    "enable": true,
-    "callSnippet": false
-  },
-  "$schema": "https://raw.githubusercontent.com/EmmyLuaLs/emmylua-analyzer-rust/refs/heads/main/crates/emmylua_code_analysis/resources/schema.json"
+  }
 }

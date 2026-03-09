@@ -15,9 +15,8 @@ export EDITOR="$HOME/.local/bin/nvim"
 export SUDO_EDITOR="$EDITOR"
 export TERMINAL="kitty"
 
-# for use with nvim
-export MANWIDTH=999
-export MANPAGER="nvim +Man!"
+# for use with nvim (idk why you have to wrap it in a shell but hey it works now)
+export MANPAGER="sh -c 'nvim +Man!'"
 
 # file where marks will be saved for Man files
 export man_shada=$HOME/.manshada
@@ -28,8 +27,6 @@ unalias vi 2>/dev/null
 
 # If not running interactively, don't do anything else
 case $- in *i*) ;; *) return;; esac
-
-
 
 
 export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'

@@ -7,11 +7,8 @@ setmetatable(G, G)
 -- thank you gemini.
 G.__index = function(_, key)
   return function(...)
-    local maybeFunction = rawget(G, key)
-
-    if type(rawget(G, key)) ~= "function" then return maybeFunction end
-
-    return maybeFunction(...)
+    local v = rawget(G, key)
+    return type(v) == "function" and v(...) or v
   end
 end
 G.__newindex = function(_, key, value)

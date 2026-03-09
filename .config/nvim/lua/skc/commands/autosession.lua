@@ -47,7 +47,7 @@ end
 
 local function changeWriteAutoSession(name)
   if name == nil or name == "" or name == vim.NIL then
-    error("provide a valid session name")
+    vim.notify("provide a valid session name", vim.log.levels.ERROR)
   end
 
   if name == defaultSessionName and currSession == nil then

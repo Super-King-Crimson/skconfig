@@ -41,7 +41,7 @@ local DEFAULT_OPTS = {
   -- this is a weird one tho
   -- i guess if style == enum.float then its a float?
   style = enum.float,
-  direction = enum.dockleft,
+  direction = enum.dockbottom,
 }
 
 -- creates default win opts
@@ -173,8 +173,8 @@ end
 
 -- pure convenience function
 -- returns a number if the window was new (which is its index to save computation time)
-local function __updateWindow(name)
-  local new_win_index = null
+local function __updateWindow(name, winopts)
+  local new_win_index = nil
 
   -- if this is a new window, we automatically know the window index is at the end
   if not ALL_WINDOWS[name] then
@@ -196,13 +196,13 @@ local function toggleFloatWindow(name, winopts)
   if isWinActive(CURRENT_FLOATING_WINDOW) then
     closeWindow(CURRENT_FLOATING_WINDOW)
 
-    if name == CURRENT_FLOATING_WINDOW then return end
+    if name == CURRENT_FLOATING_WINDOW and not winopts then return end
   end
 
   local new_win_index = nil
 
   if not ALL_WINDOWS[name] or winopts ~= nil then
-    new_win_index = __updateWindow(name)
+    new_win_index = __updateWindow(name, winopts)
   end
 
   if not vim.api.nvim_buf_is_valid(ALL_WINDOWS[name].bufnr) then
@@ -226,9 +226,11 @@ end
 -- like attachFloatWindow, but for dock
 -- TODO: LEARN HOW SPLITS WORK SO YOU CAN FIGURE OUT WHAT ARGUMENTS THIS SHOULD ACCEPT
 local function attachDockWindow(winopts)
+  if not winopts.style then error("winopts should include a style element") end
+
   local win_config = {
     -- TODO: find out do we need a window to split from? or can we split relative to the whole screen?
-    win = 0,
+    win = -1,
     split = map[winopts.style]
   }
 
@@ -243,18 +245,19 @@ local function toggleDockWindow(name, winopts)
   if name == nil then error("Expected name, got nil") end
 
   if isWinActive(name) then
-    -- TODO: should we automatically close floating window here as well?
     closeWindow(name)
-    return
+
+    -- if no additional configuration added, then we're done here
+    if not winopts then return end
   end
 
   local new_win_index = nil
   if not ALL_WINDOWS[name] or winopts ~= nil then
-    new_win_index = __updateWindow(name)
+    new_win_index = __updateWindow(name, winopts)
   end
 
   if not vim.api.nvim_buf_is_valid(ALL_WINDOWS[name].bufnr) then
-    winopts.bufnr = vim.api.nvim_create_buf(false, true)
+    ALL_WINDOWS[name].bufnr = vim.api.nvim_create_buf(false, true)
   end
 
   attachDockWindow(ALL_WINDOWS[name])
@@ -350,22 +353,17 @@ local function swapWindowType()
     end
 
     winopts.style = winopts.direction
-    toggleDockWindow(name)
-    return
+  else
+    winopts.style = enum.float
   end
 
-  winopts.style = enum.float
-  toggleFloatWindow(name)
+  toggleWindow(name, winopts)
 end
 ---@diagnostic enable
 
 vim.keymap.set("n", "<Leader>O", function()
   toggleWindow(ACCESS_LIST[CURRENT_WINDOW_INDEX] or generateWinTitle())
 end, { desc = "[O]pen last floater" })
-
-vim.keymap.set("n", "<Leader>of", toggleWindowFromFuzzy, { desc = "[O]pen [F]loater" })
-
-vim.keymap.set("n", "<Leader>oh", swapWindowType, { desc = "[O]h [H]ell no" })
 
 local augroup = vim.api.nvim_create_augroup("SKC_FloatLifecycle", { clear = true })
 vim.api.nvim_create_autocmd({ "WinResized" }, {
@@ -383,3 +381,19 @@ vim.api.nvim_create_autocmd({ "WinResized" }, {
     end
   end
 })
+
+-- vim.api.nvim_create_autocmd({ "WinExit" }, {
+--   group = augroup,
+--   desc = "Allows split windows to persist across tabs",
+--
+--   callback = function()
+--     ---@diagnostic disable-next-line: param-type-mismatch
+--     for _, winid in ipairs(vim.v.event.windows) do
+--       local name = isManagedWinid(winid)
+--
+--       if name then
+--         logMsg(string.format("Managed window %s resized to %d", name, vim.api.nvim_win_get_width(winid)))
+--       end
+--     end
+--   end
+-- })

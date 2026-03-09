@@ -203,24 +203,10 @@ local function overwrite_previous_config(dir)
   return true
 end
 
-local function update_emmyrc(client, bufnr)
-  -- automatically set rootdir when you enter $MYVIMRC
-  if not client.root_dir then
-    if vim.api.nvim_buf_get_name(bufnr) == stdconfig .. "/init.lua" then
-      client.root_dir = stdconfig
-    else
-      vimnotify(string.format("we're done here. you're in %s", vim.api.nvim_buf_get_name(bufnr)))
-      return
-    end
-  end
-
-  local path = client.root_dir
-
-  -- you can load your nvim emmyrc into another file by creating the .loademmy file
-  if path ~= stdconfig and vim.fn.glob(path .. "/.loademmy") == "" then return end
-
-  local backed_up = backup and vim.fn.filereadable(path .. emmyrc_tail) == 1
-  local success, updated = pcall(overwrite_previous_config, path)
+-- modify client config before init
+local function update_emmyrc(root)
+  local backed_up = backup and vim.fn.filereadable(vim.fs.joinpath(root, emmyrc_tail)) == 1
+  local success, updated = pcall(overwrite_previous_config, root)
 
   if success == true and updated == false then return end
 
@@ -232,32 +218,42 @@ local function update_emmyrc(client, bufnr)
     else
       vimnotify("Successfully created .emmyrc.json.", vim.log.levels.INFO)
     end
-
-    -- restart to get new stuff
-    client:stop()
-    vim.lsp.enable(client.name) 
   else
     vim.notify("Attempted to create a new .emmyrc.json, but it failed.", vim.log.levels.ERROR)
     vim.notify("error: " .. updated, vim.log.levels.ERROR)
   end
 end
 
-
-
-
-
-
+local root_markers = {
+  '.emmyrc.json',
+  '.luarc.json',
+  '.git',
+}
 
 ---@type vim.lsp.Config
 return {
   cmd = { 'emmylua_ls' },
 
-  on_attach = update_emmyrc,
+  root_dir = function(bufnr, on_dir)
+    local root = vim.fs.root(bufnr, root_markers)
+    -- stall stdconfig, we have to load our emmyrc
+    -- allow automatic loading of emmyrc with .loademmy in same directory as .emmyrc.json
+    if root ~= nil and root ~= stdconfig and not vim.uv.fs_stat(vim.fs.joinpath(root, ".loademmy")) then
+      return on_dir(root)
+    end
+
+    local bufname = vim.api.nvim_buf_get_name(bufnr)
+    if string.find(bufname, stdconfig) then
+      root = stdconfig
+    else
+    -- if current buffer is not a child of stdconfig, then give up and just activate with no .emmyrc.json
+      return on_dir(vim.fn.getcwd())
+    end
+
+    -- otherwise, update emmyrc before we start
+    update_emmyrc(root)
+    on_dir(root)
+  end,
 
   filetypes = { 'lua' },
-  root_markers = {
-    '.emmyrc.json',
-    '.luarc.json',
-    '.git',
-  },
 }

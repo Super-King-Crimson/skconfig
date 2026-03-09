@@ -1,11 +1,41 @@
 {
-  "completion": {
-    "callSnippet": false,
-    "enable": true
+  "runtime": {
+    "requirePattern": [
+      "lua/?.lua",
+      "lua/?/init.lua"
+    ],
+    "version": "LuaJIT",
+    "extensions": [
+      ".lua"
+    ]
+  },
+  "diagnostics": {
+    "disable": [
+      "invert-if",
+      "deprecated",
+      "discard-returns",
+      "inject-field",
+      "missing-fields",
+      "missing-global-doc",
+      "need-check-nil",
+      "param-type-not-match",
+      "redefined-local",
+      "unreachable-code"
+    ],
+    "severity": {
+      "unused": "warning",
+      "return-type-mismatch": "error",
+      "access-invisible": "error"
+    }
   },
   "workspace": {
+    "ignoreDir": [
+      "after",
+      "snippets",
+      "lsp"
+    ],
     "library": [
-      "/tmp/.mount_nvimaMjOpj/usr/share/nvim/runtime",
+      "/tmp/.mount_nvimgNFnme/usr/share/nvim/runtime",
       "/home/skc/.local/share/nvim/lazy/blink.cmp",
       "/home/skc/.local/share/nvim/lazy/ccc.nvim",
       "/home/skc/.local/share/nvim/lazy/conform.nvim",
@@ -32,41 +62,11 @@
       "/home/skc/.local/share/nvim/lazy/tokyonight.nvim",
       "/home/skc/.local/share/nvim/lazy/volt",
       "/home/skc/.local/share/nvim/lazy/which-key.nvim"
-    ],
-    "ignoreDir": [
-      "after",
-      "snippets",
-      "lsp"
     ]
   },
-  "$schema": "https://raw.githubusercontent.com/EmmyLuaLs/emmylua-analyzer-rust/refs/heads/main/crates/emmylua_code_analysis/resources/schema.json",
-  "runtime": {
-    "requirePattern": [
-      "lua/?.lua",
-      "lua/?/init.lua"
-    ],
-    "extensions": [
-      ".lua"
-    ],
-    "version": "LuaJIT"
+  "completion": {
+    "enable": true,
+    "callSnippet": false
   },
-  "diagnostics": {
-    "disable": [
-      "invert-if",
-      "deprecated",
-      "discard-returns",
-      "inject-field",
-      "missing-fields",
-      "missing-global-doc",
-      "need-check-nil",
-      "param-type-not-match",
-      "redefined-local",
-      "unreachable-code"
-    ],
-    "severity": {
-      "access-invisible": "error",
-      "unused": "warning",
-      "return-type-mismatch": "error"
-    }
-  }
+  "$schema": "https://raw.githubusercontent.com/EmmyLuaLs/emmylua-analyzer-rust/refs/heads/main/crates/emmylua_code_analysis/resources/schema.json"
 }

@@ -1,6 +1,6 @@
 -- Options --
 vim.opt.termguicolors = true
-vim.o.laststatus = 3
+vim.opt.laststatus = 3
 
 -- Use treesitter to work out our folds
 vim.o.foldmethod = "expr"
@@ -9,6 +9,7 @@ vim.o.foldlevel = 99
 vim.o.foldlevelstart = 99
 vim.o.foldenable = true
 
+-- Use treesitter to work out our indents
 vim.o.indentexpr = 'v:lua.vim.treesitter.indentexpr()'
 
 vim.o.wrap = false
