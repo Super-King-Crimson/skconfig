@@ -1,54 +1,8 @@
 {
   "completion": {
-    "callSnippet": false,
-    "autoRequireNamingConvention": false,
-    "enable": true
-  },
-  "runtime": {
-    "version": "LuaJIT",
-    "requirePattern": [
-      "lua/?.lua",
-      "lua/?/init.lua"
-    ],
-    "extensions": [
-      ".lua"
-    ]
-  },
-  "workspace": {
-    "library": [
-      "/home/skc/.config/nvim",
-      "/home/skc/.local/share/nvim/site",
-      "/home/skc/.local/share/nvim/lazy/lazy.nvim",
-      "/home/skc/.local/share/nvim/lazy/nvim-web-devicons",
-      "/home/skc/.local/share/nvim/lazy/telescope-ui-select.nvim",
-      "/home/skc/.local/share/nvim/lazy/telescope-fzf-native.nvim",
-      "/home/skc/.local/share/nvim/lazy/plenary.nvim",
-      "/home/skc/.local/share/nvim/lazy/telescope.nvim",
-      "/home/skc/.local/share/nvim/lazy/which-key.nvim",
-      "/home/skc/.local/share/nvim/lazy/nvim-notify",
-      "/home/skc/.local/share/nvim/lazy/nvim-treesitter",
-      "/home/skc/.local/share/nvim/lazy/mini.snippets",
-      "/home/skc/.local/share/nvim/lazy/blink.cmp",
-      "/home/skc/.local/share/nvim/lazy/roslyn.nvim",
-      "/home/skc/.local/share/nvim/lazy/mason.nvim",
-      "/home/skc/.local/share/nvim/lazy/fidget.nvim",
-      "/home/skc/.local/share/nvim/lazy/mason-tool-installer.nvim",
-      "/home/skc/.local/share/nvim/lazy/friendly-snippets",
-      "/home/skc/.local/share/nvim/lazy/mini.nvim",
-      "/home/skc/.local/share/nvim/lazy/lualine.nvim",
-      "/home/skc/.local/share/nvim/lazy/ccc.nvim",
-      "/home/skc/.local/share/nvim/lazy/toggleterm.nvim",
-      "/home/skc/.local/share/nvim/lazy/moonfly",
-      "/home/skc/.local/share/nvim/lazy/tokyonight.nvim",
-      "/home/skc/.local/bin/neovim/usr/share/nvim/runtime",
-      "/home/skc/.local/bin/neovim/usr/share/nvim/runtime/pack/dist/opt/netrw",
-      "/home/skc/.local/bin/neovim/usr/share/nvim/runtime/pack/dist/opt/matchit",
-      "/home/skc/.local/bin/neovim/usr/lib/nvim",
-      "/home/skc/.local/share/nvim/lazy/moonfly/after",
-      "/home/skc/.config/nvim/after",
-      "/home/skc/.local/state/nvim/lazy/readme",
-      "/home/skc/.config/nvim/lsp/3rd"
-    ]
+    "autoRequire": false,
+    "enable": true,
+    "callSnippet": true
   },
   "diagnostics": {
     "disable": [
@@ -64,10 +18,58 @@
       "unreachable-code"
     ],
     "severity": {
+      "unused": "warning",
       "access-invisible": "error",
-      "return-type-mismatch": "error",
-      "unused": "warning"
+      "return-type-mismatch": "error"
     }
+  },
+  "workspace": {
+    "library": [
+      "/home/skc/.local/bin/neovim/usr/lib/nvim",
+      "/home/skc/.local/bin/neovim/usr/share/nvim/runtime",
+      "/home/skc/.local/bin/neovim/usr/share/nvim/runtime/pack/dist/opt/matchit",
+      "/home/skc/.local/bin/neovim/usr/share/nvim/runtime/pack/dist/opt/netrw",
+      "/home/skc/.local/share/nvim/lazy/blink.cmp",
+      "/home/skc/.local/share/nvim/lazy/ccc.nvim",
+      "/home/skc/.local/share/nvim/lazy/fidget.nvim",
+      "/home/skc/.local/share/nvim/lazy/friendly-snippets",
+      "/home/skc/.local/share/nvim/lazy/lazy.nvim",
+      "/home/skc/.local/share/nvim/lazy/lsp_signature.nvim",
+      "/home/skc/.local/share/nvim/lazy/lualine.nvim",
+      "/home/skc/.local/share/nvim/lazy/mason-tool-installer.nvim",
+      "/home/skc/.local/share/nvim/lazy/mason.nvim",
+      "/home/skc/.local/share/nvim/lazy/mini.nvim",
+      "/home/skc/.local/share/nvim/lazy/mini.snippets",
+      "/home/skc/.local/share/nvim/lazy/moonfly",
+      "/home/skc/.local/share/nvim/lazy/moonfly/after",
+      "/home/skc/.local/share/nvim/lazy/nvim-notify",
+      "/home/skc/.local/share/nvim/lazy/nvim-treesitter",
+      "/home/skc/.local/share/nvim/lazy/nvim-web-devicons",
+      "/home/skc/.local/share/nvim/lazy/plenary.nvim",
+      "/home/skc/.local/share/nvim/lazy/roslyn.nvim",
+      "/home/skc/.local/share/nvim/lazy/telescope-fzf-native.nvim",
+      "/home/skc/.local/share/nvim/lazy/telescope-ui-select.nvim",
+      "/home/skc/.local/share/nvim/lazy/telescope.nvim",
+      "/home/skc/.local/share/nvim/lazy/toggleterm.nvim",
+      "/home/skc/.local/share/nvim/lazy/tokyonight.nvim",
+      "/home/skc/.local/share/nvim/lazy/which-key.nvim",
+      "/home/skc/.local/share/nvim/site",
+      "/home/skc/.local/state/nvim/lazy/readme",
+      "/home/skc/.config/nvim/lsp/3rd"
+    ],
+    "ignoreDir": [
+      "./lsp/unused"
+    ]
+  },
+  "runtime": {
+    "requirePattern": [
+      "lua/?.lua",
+      "lua/?/init.lua"
+    ],
+    "version": "LuaJIT",
+    "extensions": [
+      ".lua"
+    ]
   },
   "$schema": "https://raw.githubusercontent.com/EmmyLuaLs/emmylua-analyzer-rust/refs/heads/main/crates/emmylua_code_analysis/resources/schema.json"
 }

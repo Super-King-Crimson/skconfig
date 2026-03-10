@@ -96,8 +96,8 @@
 	},
 	"function": {
 		"prefix": "fn",
-		"body": ["function${1}(${2})", "\t${0}", "end"],
-		"description": "Define a function"
+		"body": ["function(${1})", "\t${0}", "end"],
+		"description": "Function callback"
 	},
 	"assign-function": {
 		"prefix": "f=",
@@ -109,22 +109,9 @@
 		"body": ["${1:name} = function($2)", "\t${0}", "end,"],
 		"description": "Assign a function to a table key"
 	},
-	"self": {
-		"prefix": "self:",
-		"body": ["function self:${1:methodName}($2)", "\t$0", "end"]
-	},
-	"while": {
-		"prefix": "while",
-		"body": ["while ${1:true} do", "\t$0", "end"]
-	},
 	"pcall": {
-		"prefix": "pca",
-		"body": ["pcall(${1:function})"],
-		"description": "Protect call a function"
-	},
-	"locpcall": {
-		"prefix": "lpca",
-		"body": ["local ${1:status}, ${2:err_or_value} = pcall(${3:function})"],
+		"prefix": "pc",
+		"body": ["local ${1:success}, ${2:result} = pcall($0)"],
 		"description": "Protect call a function as a variable"
 	},
 	"full-doc": {
@@ -173,8 +160,12 @@
 		"prefix": "docenum",
 		"body": "---@enum ${0:LogLevels}"
 	},
+	"@type": {
+		"prefix": ["doctype"],
+		"body": "---@type ${0:string}"
+	},
 	"@alias": {
-		"prefix": ["doctype", "docalias"],
+		"prefix": ["docalias"],
 		"body": "---@alias ${0:number}"
 	},
 	"@name": {

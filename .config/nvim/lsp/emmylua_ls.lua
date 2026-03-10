@@ -1,24 +1,32 @@
----@diagnostic disable: need-check-nil
----@diagnostic disable: undefined-global
----@diagnostic disable: unnecessary-if
-
 -- NOTE: you can load your nvim emmyrc into another project by creating a .loademmy file in the the project root
-
 local schema = "https://raw.githubusercontent.com/EmmyLuaLs/emmylua-analyzer-rust/refs/heads/main/crates/emmylua_code_analysis/resources/schema.json"
 
 -- toggle this if the messages get annoying
 local silent_mode = false
-local debug_mode = true
+local debug_mode = false
 
 -- alternatively, just disable backups
 local backup = true
+-- and to manually change it in the .emmyrc.json, set this to false
+local auto_update = true
 
-local stdconfig = vim.fn.stdpath("config")
+local stdconfig = vim.fn.stdpath("config") --[[@as string]]
 local emmyrc_tail = ".emmyrc.json"
 local emmylua_tail = ".emmyrc.bak.lua"
 
 -- load all directories across the runtime files
-local include = vim.api.nvim_get_runtime_file("", true)
+local include = {}
+
+-- but not our config directory
+local stdconfig_len = string.len(stdconfig)
+local dirs = vim.api.nvim_get_runtime_file("", true)
+table.sort(dirs)
+
+for _, dir in ipairs(dirs) do
+  if not string.find(string.sub(dir, 1, stdconfig_len), stdconfig, 1, true) then
+    table.insert(include, dir)
+  end
+end
 
 -- optional: tell emmylua about vim.uv
 -- make a place to store external libraries (i chose stdpath("config")/lsp/3rd)
@@ -32,6 +40,10 @@ local emmy_settings = {
   ['$schema'] = schema,
   workspace = {
     library = include,
+    ignoreDir = {
+      -- put all lspconfigs you're not using here!
+      "./lsp/unused",
+    },
   },
 
   runtime = {
@@ -45,8 +57,9 @@ local emmy_settings = {
 
   completion = {
     enable = true,
-    callSnippet = false,
-    autoRequireNamingConvention = false,
+    callSnippet = true,
+    -- suggests a lot of garbage, wouldn't recommend
+    autoRequire = false,
   },
 
   diagnostics = {
@@ -74,11 +87,11 @@ local emmy_settings = {
 
 -- LOGIC
 
-
 local function vimnotify(msg, loglevel)
   if silent_mode then return end
   if loglevel == nil then loglevel = vim.log.levels.DEBUG end
   if not debug_mode and loglevel == vim.log.levels.DEBUG then return end
+
   vim.notify(msg, loglevel)
 end
 
@@ -94,7 +107,7 @@ local function format_json(json_str)
   for i = 1, #json_str do
     local char = json_str:sub(i, i)
 
-    -- Handle string escaping (don't flip is_quoted if the quote is escaped)
+
     if char == "\\" then
       escaped = not escaped
     elseif char == '"' and not escaped then
@@ -140,7 +153,9 @@ local function overwrite_previous_config(dir, config)
     local contents = file:read("*a")
     file:close()
 
-    local result, file_settings = pcall(vim.json.decode, contents, { luanil = { object = true, array = true } })
+    local result, file_settings = pcall(function()
+      return vim.json.decode(contents, { luanil = { object = true, array = true } })
+    end)
 
     -- file had invalid json
     if result == false and backup == true then
@@ -187,6 +202,8 @@ end
 
 -- modify client config before init
 local function update_emmyrc(root)
+  if not auto_update then return end
+
   local config = vim.deepcopy(emmy_settings)
 
   -- 0: successful file overwrite, 1: file overwrite skipped, 2: file overwrite failed
@@ -226,8 +243,6 @@ return {
     -- stall stdconfig, we have to load our emmyrc
     -- allow automatic loading of emmyrc with .loademmy in same directory as .emmyrc.json
     if root ~= nil and root ~= stdconfig and not vim.uv.fs_stat(vim.fs.joinpath(root, ".loademmy")) then
-      vimnotify("Skipping: loading not preferred")
-      vimnotify("root: " .. root)
       on_dir(root) 
       return root
     end
@@ -237,14 +252,12 @@ return {
       root = stdconfig
     else
       -- if current buffer is not a child of stdconfig, then give up and just activate with no .emmyrc.json
-      vimnotify("skipped, root: " .. root)
       on_dir(vim.fn.getcwd())
       return vim.fn.getcwd()
     end
 
     -- otherwise, update emmyrc before we start
     update_emmyrc(root)
-    vimnotify("updated file, root: " .. root)
     on_dir(root)
     return root
   end,
