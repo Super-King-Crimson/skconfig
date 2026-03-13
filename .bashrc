@@ -184,7 +184,7 @@ fi
 # useful cli arguments:
 ## tree: prints directory recursive, opts: I ignore-pat, L depth, i (no indent lines), f(ull relative path)
 
-
+alias tree="eza -AT --icons=always --color=always"
 
 # --- SAFEME ALIASES (START) ---
 if [ -f /usr/local/bin/safe-rm ]; then
