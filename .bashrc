@@ -32,7 +32,7 @@ export TERMINAL="kitty"
 ilab-mount() {
 	ssh -f ilab sleep 1000h
 
-	rclone mount ilab: ~/Remote \
+	rclone mount ilab-mount: ~/Remote \
 		--vfs-cache-mode full \
 		--vfs-cache-max-age 1000h \
 		--vfs-cache-max-size 32G \
