@@ -56,7 +56,7 @@ rm makemesafe.sh
 
 # Installations
 - [nvm](https://www.nvmnode.com/guide/download.html#nvm-for-linux-ubuntu-mac-nvm-sh)
-    - `nvm install latest`
+    - `nvm install node`
 - apt
     - `sudo apt update`
     - `sudo apt install gcc clang git unzip zip bat eza ripgrep xclip xdotool restic htop -y`
