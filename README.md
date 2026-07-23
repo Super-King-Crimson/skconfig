@@ -57,10 +57,11 @@ rm makemesafe.sh
 # Installations
 - [nvm](https://www.nvmnode.com/guide/download.html#nvm-for-linux-ubuntu-mac-nvm-sh)
     - `nvm install latest`
+- apt
+    - `sudo apt update`
+    - `sudo apt install gcc clang git unzip zip bat eza ripgrep xclip xdotool restic htop -y`
 - [rust](https://rustup.rs/)
     - `cargo install --locked tree-sitter-cli`
-- apt
-    - `sudo apt install bat eza ripgrep xclip xdotool restic htop -y`
 - [rokit](https://github.com/rojo-rbx/rokit#installation)
 - [dotnet](https://learn.microsoft.com/en-us/dotnet/core/install/linux)
 - [parsec](https://parsec.app/downloads)
