@@ -1,6 +1,6 @@
 ### For WSL
 if [ -n "$WSL_DISTRO_NAME" ]; then
-	export win="/mnt/c/Users/rolan"
+	export win="/mnt/c/Users/winskc/"
 	alias xclip=clip.exe
 else
 	alias xclip='xclip -selection clipboard'
@@ -41,6 +41,7 @@ export rc="$HOME/.bashrc"
 export EDITOR=nvim
 export SUDO_EDITOR="$EDITOR"
 export TERMINAL="kitty"
+export GPG_TTY=$(tty)
 
 # for use with nvim (idk why you have to wrap it in a shell but hey it works now)
 export MANPAGER="sh -c 'nvim +Man!'"

@@ -21,14 +21,20 @@ encrypt_archive_symmetrical_gpg() {
 		return 1
 	fi
 
-	# -c uses symmetric encryption
-	tar -cf - "$folder_path" | gpg $GPG_OPTS -c -o "$output_name.tar.gpg"
+	(
+		# Run in subshell so we can set pipefail without affecting main script
+		# set -e: exit if any command has nonzero error code
+		# set -o pipefail: command with pipes returns first nonzero error code, not just error code of last command
+		set -eo pipefail
+		# -d decrypts the file and pipes the stdout directly to tar
+		tar -cf - "$folder_path" | gpg $GPG_OPTS -c -o "$output_name.tar.gpg"
+	)
 
-	local status_tar=${PIPESTATUS[0]}
-	local status_gpg=${PIPESTATUS[1]}
-	if [[ $status_tar -eq 0 && $status_gpg -eq 0 ]]; then
-		echo "Archive encrypted successfully as $output_name.tar.gpg."
-		echo "Please delete the original directory."
+	if [ $? -eq 0 ]; then
+		echo Archive encrypted successfully as $output_name.tar.gpg.
+		echo Please delete the original directory.
+	else
+		echo Failed to encrypt $(realpath folder_path).
 	fi
 }
 
