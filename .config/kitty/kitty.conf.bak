@@ -1,0 +1,83 @@
+# vim:fileencoding=utf-8:foldmethod=marker
+# symbol_map
+env read_from_shell=EDITOR
+
+font_size 14
+disable_ligatures cursor
+# cursor #cccccc
+# cursor_text_color #111111
+cursor_shape block
+cursor_shape_unfocused hollow
+cursor_beam_thickness 1.5
+cursor_blink_interval 1.5 linear linear
+cursor_stop_blinking_after 1000.0
+cursor_trail 50
+cursor_trail_decay 0.1 0.2
+cursor_trail_start_threshold 8
+# cursor_trail_color #888888
+confirm_os_window_close 0
+
+tab_bar_edge top
+tab_bar_min_tabs 3
+
+scrollback_pager nvim --cmd 'set eventignore=FileType' +'nnoremap q ZQ' +'call nvim_open_term(0, {})' +'set nomodified nolist' +'$' -
+# url_color #0087bd
+url_style curly
+open_url_with default
+show_hyperlink_targets true
+underline_hyperlinks hover
+paste_actions no-op
+
+repaint_delay 20
+input_delay 10
+
+enable_audio_bell no
+window_alert_on_bell yes
+bell_on_tab "🔔 "
+
+initial_window_width 60c
+initial_window_height 20c
+
+hide_window_decorations no
+
+remember_window_size no
+remember_window_position no
+
+window_resize_step_cells 2
+window_resize_step_lines 2
+# foreground #dddddd
+background #151515
+
+background_opacity 1.0
+
+shell_integration enabled
+
+allow_remote_control yes
+
+map ctrl+j scroll_line_down
+map ctrl+k scroll_line_up
+map ctrl+shift+j scroll_to_prompt -1
+map ctrl+shift+k scroll_to_prompt 0
+map ctrl+n show_scrollback
+# map ctrl+shift+n send_text normal,arguments \x20 ${EDITOR-vi} ~/.config/kitty/kitty.conf\r
+map ctrl+shift+n send_text normal,arguments \x03 ${EDITOR-vi} ~/.config/kitty/kitty.conf\r
+# clear scrollback buffer
+map ctrl+shift+l send_text normal printf \'\\033[2J\\033[3J\\033[1;1H\'\x0d
+map ctrl+tab next_tab
+
+# NVIM GUARD
+map --when-focus-on title:nvim ctrl+j no-op
+map --when-focus-on title:nvim ctrl+k no-op
+map --when-focus-on title:nvim ctrl+shift+j no-op
+map --when-focus-on title:nvim ctrl+shift+k no-op
+map --when-focus-on title:nvim ctrl+n no-op
+map --when-focus-on title:nvim ctrl+shift+n no-op
+# clear scrollback buffer no-op
+map --when-focus-on title:nvim ctrl+shift+l no-op
+
+# BEGIN_KITTY_FONTS
+font_family      family="FantasqueSansM Nerd Font Mono"
+bold_font        auto
+italic_font      auto
+bold_italic_font auto
+# END_KITTY_FONTS

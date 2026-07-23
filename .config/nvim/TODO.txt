@@ -1,0 +1,15 @@
+TODO:
+tree commands: ILif
+
+finish float
+change tab windows to be prettier
+
+make the function jumper of your dreams
+vim.lsp.buf.document_symbol
+vim.lsp.ListOpts
+
+create easy, exportable version of config (howdoiexit.nvim)
+
+BRO THERE'S A WSL OPTION FOR NVIM IM CRINGGGG
+
+Make a plugin that allows you to re-open closed tabs

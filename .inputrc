@@ -1,0 +1,3 @@
+set completion-ignore-case on
+set completion-map-case on
+set match-hidden-files on

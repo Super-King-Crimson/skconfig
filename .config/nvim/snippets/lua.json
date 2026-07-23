@@ -1,0 +1,197 @@
+{
+	"require": {
+		"prefix": "req",
+		"body": ["require(${1:module})"],
+		"description": "Require module"
+	},
+	"return": {
+		"prefix": "rt",
+		"body": ["return $0"],
+		"description": "Return value"
+	},
+	"assigment": {
+		"prefix": "ll",
+		"body": ["local ${1:varName} = ${0:value}"],
+		"description": "Define a variable"
+	},
+	"local": {
+		"prefix": "l",
+		"body": ["local ${0}"],
+		"description": "Declare a variable"
+	},
+	"locreq": {
+		"prefix": "lreq",
+		"body": ["local ${1:module} = require(\"${2:$1}\")$0"],
+		"description": "Require module as a variable"
+	},
+	"class": {
+		"prefix": "cl",
+		"body": [
+			"${1:M} = {}\n",
+			"$1.${2:new} = function($3)",
+			"\t${6}",
+			"end"
+		],
+		"description": "Create a class"
+	},
+	"if": {
+		"prefix": "if",
+		"body": ["if ${1:true} then", "\t$0", "end"]
+	},
+	"then": {
+		"prefix": "then",
+		"body": ["then$0", "end"]
+	},
+	"do": {
+		"prefix": "do",
+		"body": ["do", "\t$0", "end"]
+	},
+	"its nil dammit": {
+		"prefix": "null",
+		"body": ["nil $0"]
+	},
+	"its local dammit": {
+		"prefix": [ "let", "const" ],
+		"body": ["local $0"]
+	},
+	"else": {
+		"prefix": "else",
+		"body": ["else$0", "end"]
+	},
+	"elseif": {
+		"prefix": "elseif",
+		"body": ["elseif ${1:true} then", "\t$0"]
+	},
+	"for": {
+		"prefix": "for",
+		"body": ["for $1 do", "\t$0", "end"],
+		"description": "for statement"
+	},
+	"for-numeric": {
+		"prefix": "forn",
+		"body": ["for ${1:i} = ${2:1}, ${3:10} do", "\t$0", "end"],
+		"description": "for numeric range statement"
+	},
+	"for-ipairs": {
+		"prefix": "fori",
+		"body": ["for ${1:i}, ${2:x} in ipairs(${3:t}) do", "\t$0", "end"],
+		"description": "for i, x in ipairs(t)"
+	},
+	"for-pairs": {
+		"prefix": "forp",
+		"body": ["for ${1:k}, ${2:v} in pairs(${3:t}) do", "\t$0", "end"],
+		"description": "for k, v in pairs(t)"
+	},
+	"forline": {
+		"prefix": "forline",
+		"body": [
+			"local f = io.open(${1:${2:filename}}, \"${3:r}\")\n",
+			"while true do",
+			"\tline = f:read()",
+			"\tif line == nil then break end\n",
+			"\t${0}",
+			"end"
+		],
+		"description": "Read file line by line"
+	},
+	"function": {
+		"prefix": "fn",
+		"body": ["function(${1})", "\t${0}", "end"],
+		"description": "Function callback"
+	},
+	"assign-function": {
+		"prefix": "f=",
+		"body": ["${1:name} = function($2)", "\t${0}", "end"],
+		"description": "Assign a function to a variable"
+	},
+	"member-function": {
+		"prefix": "f,",
+		"body": ["${1:name} = function($2)", "\t${0}", "end,"],
+		"description": "Assign a function to a table key"
+	},
+	"pcall": {
+		"prefix": "pc",
+		"body": ["local ${1:success}, ${2:result} = pcall($0)"],
+		"description": "Protect call a function as a variable"
+	},
+	"full-doc": {
+		"prefix": "doc",
+		"body": [
+			"--- ${1:A one-line summary.}",
+			"-- ${2:Description.}$0",
+			"-- @param ${5:name} ${6:type} ${7:Parameter description.}",
+			"-- @return ${3:type} ${4: Description of the returned object.}",
+			"-- @usage ${8:Example about how to use it.}"
+		],
+		"description": "A lua comment with short summary, description, parameters, return, and example."
+	},
+	"@param": {
+		"prefix": ["docparam", "docarg" ],
+		"body": [
+			"@param ${1:name} ${2:type} ${3:Parameter description.}$0"
+		],
+		"description": "Describe function parameters. It requires the name of the parameter and its description."
+	},
+	"@generic": {
+		"prefix": "docgen",
+		"body": [
+			"---@generic ${1:T}"
+		]
+	},
+	"@return": {
+		"prefix": "docret",
+		"body": [
+			"@return ${1:type} ${2:Description of the returned object.}$0"
+		],
+		"description": "Describe a returning value of the function. Since Lua can return multiple values, this tag should appear more than once."
+	},
+	"@class": {
+		"prefix": "docclass",
+		"body": ["---@class ${0:State}"]
+	},
+	"@field": {
+		"prefix": "docfield",
+		"body": [
+			"@field ${1:description.}$0"
+		],
+		"description": "Describe a table field definition."
+	},
+	"@enum": {
+		"prefix": "docenum",
+		"body": "---@enum ${0:LogLevels}"
+	},
+	"@type": {
+		"prefix": ["doctype"],
+		"body": "---@type ${0:string}"
+	},
+	"@alias": {
+		"prefix": ["docalias"],
+		"body": "---@alias ${0:number}"
+	},
+	"@name": {
+		"prefix": "docname",
+		"body": [
+			"@name ${1:text}$0"
+		],
+		"description": "The name of the function or table definition. This is usually infered from the code analysis, and the programmer does not need to define it. If LuaDoc can infer the name of the function automatically it's even not recomended to define the name explicitly, to avoid redundancy."
+	},
+	"@deprecated": {
+		"prefix": "docdep",
+		"body": [
+			"---@deprecated"
+		],
+		"description": "The name of the function or table definition. This is usually infered from the code analysis, and the programmer does not need to define it. If LuaDoc can infer the name of the function automatically it's even not recomended to define the name explicitly, to avoid redundancy."
+	},
+	"diagnostic disable line": {
+		"prefix": "diadl",
+		"body": [
+			"---@diagnostic disable-next-line: ${0:unnecessary-if}"
+		]
+	},
+	"diagnostic disable": {
+		"prefix": "diads",
+		"body": [
+			"---@diagnostic disable-next-line: ${0:undefined-global}"
+		]
+	}
+}

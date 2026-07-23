@@ -1,0 +1,11 @@
+[safe]
+	directory = *
+[user]
+	email = "129329889+Super-King-Crimson@users.noreply.github.com"
+	name = "Roland Dillon"
+[credential]
+	credentialStore = gpg
+[init]
+	defaultBranch = main
+[pull]
+	rebase = false
