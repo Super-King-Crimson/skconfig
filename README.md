@@ -70,12 +70,11 @@ rm makemesafe.sh
 ## Crons
 - Run `crontab -e` and paste this line at the bottom:
 ```sh
-# Create cron log directory
 * * * * *  /usr/bin/env bash -c 'mkdir -p $HOME/.local/state/cron'
 # Automatic backups (MAKE SURE TO HARDLINK ~/backup.tar.gpg TO ~/Binaries/ AND EXTRACT IT)
-0 1 * * *  /usr/bin/env bash -c 'LOGFILE="$HOME/.local/state/cron/backup.log"; touch "$LOGFILE"; echo $(date +"%m-%d-%Y @ %H:%M:%S") > "${LOGFILE}.new"; $HOME/Binaries/backup/main.bash >> "${LOGFILE}.new" 2>&1; cat "${LOGFILE}" >> "${LOGFILE}.new"; mv "${LOGFILE}.new" "$LOGFILE"'
+0 1 * * *  /usr/bin/env bash -c 'LOGFILE="$HOME/.local/state/cron/backup.log"; touch "$LOGFILE"; date +"%m-%d-%Y @ %H:%M:%S" > "${LOGFILE}.new"; $HOME/Binaries/backup/main.bash >> "${LOGFILE}.new" 2>&1; cat "${LOGFILE}" >> "${LOGFILE}.new"; mv "${LOGFILE}.new" "$LOGFILE"'
 # ilab kinit refresh
-0 * * * *  /usr/bin/env bash -c 'LOGFILE="$HOME/.local/state/cron/ilabkinit.log"; (date; /usr/bin/kinit -R) > "${LOGFILE}.new" 2>&1; cat "${LOGFILE}" >> "${LOGFILE}.new"; mv "${LOGFILE}.new" "$LOGFILE"'
+0 0 * * *  /usr/bin/env bash -c 'LOGFILE="$HOME/.local/state/cron/ilabkinit.log"; touch "$LOGFILE"; date +"%m-%d-%Y @ %H:%M:%S" > "${LOGFILE}.new"; kinit -R >> "${LOGFILE}.new" 2>&1; cat "${LOGFILE}" >> "${LOGFILE}.new"; mv "${LOGFILE}.new" "$LOGFILE"'
 ```
 
 ## SSH
