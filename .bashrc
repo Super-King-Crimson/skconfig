@@ -7,7 +7,6 @@ else
 fi
 
 
-
 ### Lazy loads
 nvm () { __lazy_nvm "$@" && nvm "$@"; }
 node () { __lazy_nvm "$@" && node "$@"; }
@@ -64,9 +63,14 @@ shopt -s checkwinsize
 shopt -s histappend
 shopt -u cdable_vars
 
-# Only continue if not running interactively
+
+
+### Only continue if not running interactively
 case $- in *i*) ;; *) return;; esac
 
+
+
+### Color
 # set variable identifying the chroot you work in (used in the prompt below)
 if [ -z "${debian_chroot:-}" ]; then
 	if [ -r /etc/debian_chroot ]; then
@@ -86,19 +90,18 @@ case "$TERM" in
 	linux) color_prompt='yes';;
 esac
 
+main_name="superkingcraptop"
+name=$(hostname)
+if [[ $main_name == $name ]] ; then
+	unset name
+fi
+
 if [ "$color_prompt" = 'yes' ]; then
-	PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u \[\033[00m\]\[\033[01;34m\]\w \[\033[00m\]\$ '
+	PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u\[\033[01;36m\]${name:+ [$name]} \[\033[00m\]\[\033[01;34m\]\w \[\033[00m\]\$ '
 else
-	PS1='${debian_chroot:+($debian_chroot)}\u \w \$ '
+	PS1='${debian_chroot:+($debian_chroot)} \u${name:+ [$name]} \w \$ '
 fi
 unset color_prompt
-
-# enable programmable completion features
-if [ -f /usr/share/bash-completion/bash_completion ]; then
-	source /usr/share/bash-completion/bash_completion
-elif [ -f /etc/bash_completion ]; then
-	source /etc/bash_completion
-fi
 
 
 
@@ -108,6 +111,13 @@ bind '"\C-h": backward-kill-word'
 
 # End + Delete: Delete whole line
 bind '"\e[1;2F": kill-line'
+
+# enable programmable completion features
+if [ -f /usr/share/bash-completion/bash_completion ]; then
+	source /usr/share/bash-completion/bash_completion
+elif [ -f /etc/bash_completion ]; then
+	source /etc/bash_completion
+fi
 
 
 
