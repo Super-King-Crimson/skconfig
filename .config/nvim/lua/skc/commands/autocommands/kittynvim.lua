@@ -26,7 +26,7 @@ vim.api.nvim_create_autocmd("DirChanged", {
         socket,
         "send-text",
         "--match",
-        "env:KITTY_CHILD",
+        "env:KITTYNVIM_SOCKET",
         -- escape codes to cancel any running processes then clear the line
         "\x15\x01\x0b cd " .. targetDir .. " \r",
       }
@@ -49,7 +49,7 @@ vim.api.nvim_create_autocmd("VimLeave", {
         socket,
         "close-tab",
         "--match",
-        "env:KITTY_CHILD or env:KITTY_PARENT",
+        "env:KITTYNVIM_SOCKET",
       }
       local result = vim.system(command):wait()
       error(result.stderr)
