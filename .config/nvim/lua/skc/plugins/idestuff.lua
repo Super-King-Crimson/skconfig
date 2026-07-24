@@ -100,6 +100,10 @@ return {
     opts = {
       snippets = { preset = "mini_snippets" },
       keymap = { preset = "default" },
+      cmdline = {
+        keymap = { preset = "inherit" },
+        completion = { menu = { auto_show = true } },
+      },
       fuzzy = {
         frecency = {
           enabled = false

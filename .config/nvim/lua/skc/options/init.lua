@@ -68,7 +68,7 @@ vim.o.confirm = true
 -- @n = store n most recent items in input line
 -- h  = highlight search does not work in a .shada file
 -- sn = max size an item can be, in KB
-vim.o.shada = "'10,/0,:100,@100,h,s100"
+vim.o.shada = "%100,'100,/10,:100,@100,h,s100"
 
 require("skc.options.diagnostics")
 require("skc.options.neovide")
