@@ -65,14 +65,12 @@ M.defaultOptions = {
   },
 
   keys = {
-    ["<Leader>fs"]  = { mode = "n",              rhs = function() M.switchWindowType() end, },
-    ["<Leader>frn"] = { mode = "n",              rhs = function() M.renameWindowFromInput() end, },
-    ["<Leader>fdl"] = { mode = "n",              rhs = function() M.deleteWindow(M.getNameFromWinid(vim.api.nvim_get_current_win())) end, },
-    ["<C-s>"]       = { mode = "t",              rhs = function() M.renameWindowFromInput() end, },
-    ["<C-Left>"]    = { mode = { "", "!" }, rhs = function() M.switchToPrevFloat() end, },
-    ["<C-Right>"]   = { mode = { "", "!" }, rhs = function() M.switchToNextFloat() end, },
-    ["<C-O>"]       = { mode = "t", rhs = function() M.switchToNextFloat() end, },
-    ["<C-q>"]       = { mode = "t", rhs = function() M.toggleWindow() end, },
+    ["<C-x><C-s>"] = { mode = { "", "!", "t", }, rhs = function() M.switchWindowType() end, },
+    ["<C-x><C-q>"] = { mode = { "", "!", "t", }, rhs = function() M.deleteWindow(M.getNameFromWinid(vim.api.nvim_get_current_win())) end, },
+    ["<C-x><C-r>"] = { mode = { "", "!", "t", }, rhs = function() M.renameWindowFromInput() end },
+    ["<C-Left>"]   = { mode = { "", "!", "t", }, rhs = function() M.switchToPrevFloat() end, },
+    ["<C-Right>"]  = { mode = { "", "!", "t", }, rhs = function() M.switchToNextFloat() end, },
+    ["<C-q>"]      = { mode = "t", rhs = function() M.toggleWindow() end, },
   },
 }
 
