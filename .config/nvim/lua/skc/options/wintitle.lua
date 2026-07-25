@@ -1,6 +1,6 @@
 local whichAutosession = require("skc.commands.autosession").whichAutosession
 
-function generateWinTitle()
+function GenerateWinTitle()
   local buffer_name = vim.api.nvim_buf_get_name(0)
   local cut_buffer_name = ""
   if string.find(buffer_name, "[][(){}]") then
@@ -40,4 +40,4 @@ function generateWinTitle()
 end
 
 vim.o.title = true
-vim.o.titlestring = "%{v:lua.generateWinTitle()}"
+vim.o.titlestring = "%{v:lua.GenerateWinTitle()}"

@@ -25,6 +25,7 @@ local ENSURE_INSTALLED = {
     "clangd",
     "typescript-language-server",
     "roslyn",
+    "json-lsp",
   },
 
   linters = {},

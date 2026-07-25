@@ -11,7 +11,8 @@ vim.api.nvim_create_autocmd("DirChanged", {
   callback = function()
     local parent = os.getenv("KITTY_PARENT")
     if parent == "yes" then
-      local targetDir = vim.fn.getcwd()
+      ---@type string
+      local targetDir = vim.v.event.cwd
       if string.find(targetDir, remoteDir, 1, true) then
         -- idk some lua string indexing thing
         local relPath = string.sub(targetDir, string.len(remoteDir) + 1)
@@ -26,7 +27,7 @@ vim.api.nvim_create_autocmd("DirChanged", {
         socket,
         "send-text",
         "--match",
-        "env:KITTYNVIM_SOCKET",
+        "env:KITTYNVIM_SOCKET and not env:KITTY_PARENT",
         -- escape codes to cancel any running processes then clear the line
         "\x15\x01\x0b cd " .. targetDir .. " \r",
       }
