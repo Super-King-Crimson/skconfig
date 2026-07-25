@@ -7,6 +7,7 @@ else
 fi
 
 
+
 ### Lazy loads
 nvm () { __lazy_nvm "$@" && nvm "$@"; }
 node () { __lazy_nvm "$@" && node "$@"; }
