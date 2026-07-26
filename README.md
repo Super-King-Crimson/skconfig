@@ -121,7 +121,32 @@ cat $path | ac C:\ProgramData\ssh\administrators_authorized_keys
 ```
 
 ### Linux
-???
+- Run this:
+```sh
+sudo apt update
+sudo apt install openssh-server -y
+sudo systemctl enable --now sshd
+```
+- To automatically log in to a user, run this:
+```sh
+mkdir -p ~/.ssh
+chmod 700 ~/.ssh
+touch ~/.ssh/authorized_keys
+chmod 600 ~/.ssh/authorized_keys
+
+# This actually adds the key from that file
+cat <KEYNAME>.pub >> ~/.ssh/authorized_keys
+```
+- To disable password access into your server, edit `/etc/ssh/sshd_config`
+```sh
+# Change these settings:
+PasswordAuthentication no
+ChallengeResponseAuthentication no
+KbdInteractiveAuthentication no
+
+# Then run:
+sudo systemctl restart ssh
+```
 
 ## Firefox settings
 - Open `about:config` and set the following settings
