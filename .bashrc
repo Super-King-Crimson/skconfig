@@ -113,6 +113,9 @@ bind '"\C-h": backward-kill-word'
 # End + Delete: Delete whole line
 bind '"\e[1;2F": kill-line'
 
+# Autocomplete (like zsh!)
+bind '"\t": menu-complete'
+
 # enable programmable completion features
 if [ -f /usr/share/bash-completion/bash_completion ]; then
 	source /usr/share/bash-completion/bash_completion
