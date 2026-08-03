@@ -24,8 +24,11 @@ Feel free to snoop around! Take what you like, leave what's stupid.
 mkdir -p ~/.local/bin
 mkdir -p ~/Pictures/AppImages
 mkdir -p ~/Documents/AppImages
+mv -n ~/.local/share/icons/* ~/Pictures/AppImages
+mv -n ~/.local/share/applications/* ~/Documents/AppImages
+rm -rf ~/.local/share/{icons,applications}
 ln -fs ~/Pictures/AppImages ~/.local/share/icons
-ln -fs ~/Documents/AppImages/ ~/.local/share/applications
+ln -fs ~/Documents/AppImages ~/.local/share/applications
 ```
 - You also might as well get neovim now:
 ```bash
@@ -37,7 +40,8 @@ mv squashfs-root ~/.local/bin/neovim
 ln -fs ~/.local/bin/neovim/usr/bin/nvim ~/.local/bin/nvim
 rm ./nvim-linux-x86_64.appimage
 ```
-- To pull down this repo, [set up ssh credentials on github](https://medium.com/@yourfuse/git-authentication-with-ssh-keys-the-fun-way-edd8fb15d023), then run this:
+- Install [ente auth](https://github.com/ente/ente/releases?q=prerelease%3Afalse+tag%3Aauth-v4) and [set up ssh credentials on github](https://medium.com/@yourfuse/git-authentication-with-ssh-keys-the-fun-way-edd8fb15d023)
+- Run this:
 ```bash
 cd
 git clone --no-checkout git@github.com:Super-King-Crimson/skconfig.git
@@ -57,15 +61,16 @@ rm makemesafe.sh
 # Installations
 - [nvm](https://www.nvmnode.com/guide/download.html#nvm-for-linux-ubuntu-mac-nvm-sh)
     - `nvm install node`
-- apt
+    - `npm install -g tree-sitter-cli`
+- packages
     - `sudo apt update`
-    - `sudo apt install gcc clang git unzip zip bat eza ripgrep xclip xdotool restic htop -y`
+    - `sudo apt install curl wget tmux gcc clang git unzip zip bat eza ripgrep xclip xdotool restic htop -y`
 - [rust](https://rustup.rs/)
-    - `cargo install --locked tree-sitter-cli`
 - [rokit](https://github.com/rojo-rbx/rokit#installation)
 - [dotnet](https://learn.microsoft.com/en-us/dotnet/core/install/linux)
 - [parsec](https://parsec.app/downloads)
 - [tailscale](https://tailscale.com/)
+- [Input remapper](https://github.com/sezanzeb/input-remapper#installation)
 
 ## Crons
 - Run `crontab -e` and paste this line at the bottom:
