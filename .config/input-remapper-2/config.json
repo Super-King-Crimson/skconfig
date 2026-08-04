@@ -1,5 +1,5 @@
 {
-    "version": "2.2.0",
+    "version": "2.2.1",
     "autoload": {
         "AT Translated Set 2 keyboard": "LabTools",
         "Keychron Keychron K8 Pro": "LabTools"
