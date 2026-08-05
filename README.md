@@ -44,6 +44,7 @@ rm *.tar*
 ln -sf ~/.local/bin/nvim*/bin/nvim ~/.local/bin/nvim
 ```
 - Install [ente auth](https://github.com/ente/ente/releases?q=prerelease%3Afalse+tag%3Aauth-v4) and [set up ssh credentials on github](https://medium.com/@yourfuse/git-authentication-with-ssh-keys-the-fun-way-edd8fb15d023)
+    - if prompted to make a keyring, encrypt it with the same password you log in with
 - Run this:
 ```bash
 cd
@@ -88,7 +89,9 @@ wget -qO- https://tailscale.com/install.sh | sh
 ```
 - **flatpak+flathub**
 ```bash
+# or gnome backend
 sudo apt install plasma-discover-backend-flatpak flatpak
+flatpak remote-delete flathub
 sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 ```
 - **keyd**
