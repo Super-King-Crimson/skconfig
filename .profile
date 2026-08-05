@@ -7,11 +7,12 @@
 # for ssh logins, install and configure the libpam-umask package.
 # umask 022
 
-### Sources
 . "$HOME/.cargo/env"
 . "$HOME/.rokit/env"
 
-# if running bash
+
+
+### load rc
 if [ -n "$BASH_VERSION" ]; then
 	touch .bashrc
 	. "$HOME/.bashrc"

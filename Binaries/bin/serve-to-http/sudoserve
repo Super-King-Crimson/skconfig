@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+MAIN_SERVE="$SCRIPT_DIR/serve-to-http/serve"
+
+export HTTP_SERVER_COMMAND=$(which http-server 2>/dev/null)
+export NODE_BIN_DIR=$(dirname $(which node 2>/dev/null) 2>/dev/null)
+
+if [ "$EUID" -ne 0 ]; then
+    exec sudo -E env PATH="$NODE_BIN_DIR:$PATH" "$MAIN_SERVE" -p 80 "$@"
+else
+    # If already root, hand over execution to the main script natively
+    exec env PATH="$NODE_BIN_DIR:$PATH" "$MAIN_SERVE" -p 80 "$@"
+fi

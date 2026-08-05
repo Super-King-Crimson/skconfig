@@ -1,14 +1,20 @@
-### Exports
-mkdir -p "$HOME/.local/bin"
-export PATH="$HOME/.local/bin:$PATH"
-export NVM_DIR="$HOME/.nvm"
-export NVM_BIN="$HOME/.nvmbin"
-
+### PATH
 # for npm i -g installs (and node) being available globally without doing any bs
-if [ -s "$NVM_BIN" ] ; then
-	export PATH="$(cat "$NVM_BIN"):$PATH"
+# will be written to by .bashrc, which is why we export it
+export NVM_BINPATH="$HOME/.nvmbin"
+
+# -s checks if file has data
+if [ -s "$NVM_BINPATH" ] ; then
+	export PATH="$(cat "$NVM_BINPATH"):$PATH"
 fi
 
+mkdir -p "$HOME/.local/bin"
+mkdir -p "$HOME/Binaries/bin"
+export PATH="$HOME/Binaries/bin:$HOME/.local/bin:$PATH"
+
+
+
+### Exports
 export dt="$HOME/Desktop"
 export dl="$HOME/Downloads"
 export dc="$HOME/Documents"
@@ -42,6 +48,8 @@ case $- in *i*) ;; *) return ;; esac
 
 
 ### Lazy loads
+export NVM_DIR="$HOME/.nvm"
+
 nvm () { __lazy_nvm nvm "$@"; }
 node () { __lazy_nvm node "$@"; }
 npm () { __lazy_nvm npm "$@"; }
@@ -55,7 +63,9 @@ __lazy_nvm() {
 	[ -s "$NVM_DIR/bash_completion" ] && builtin source "$NVM_DIR/bash_completion"
 
 	# store the default nvm binpath so we can attach it to our $PATH in a non-interactive session
-	dirname "$(nvm which default)" > "$NVM_BIN"
+	# see .profile for implementation
+	dirname $(nvm which default) > "$NVM_BINPATH"
+	unset NVM_BINPATH
 
 	# Instantly execute whatever command initiated the trigger block
 	$@
@@ -206,6 +216,7 @@ export CLIPBOARD="xclip -sel clipboard"
 if [[ -n "$WSL_DISTRO_NAME" ]]; then
 	CLIPBOARD='clip.exe'
 fi
+
 clip() {
 	# prints to the terminal
 	tee /dev/tty | eval $CLIPBOARD

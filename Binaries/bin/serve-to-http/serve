@@ -1,0 +1,88 @@
+#!/usr/bin/env bash
+pusage() {
+	echo "Error: $1" >&2
+	cat << EOF >&2
+Usage:
+serve [-a|--address <ADDRESS>] [-p|--port <PORT>] [DIR]
+serve [-f|--file] [...] <FILE>
+
+Ensure you have node, then run the following:
+npm install -g http-server
+
+You can pass a path to a local http-server binary by exporting the HTTP_SERVER_COMMAND variable.
+EOF
+}
+
+ADDRESS=0.0.0.0
+PORT=3000
+
+if [ -z "$HTTP_SERVER_COMMAND" ]; then
+	HTTP_SERVER_COMMAND="http-server"
+fi
+
+SINGLE=
+SINGLEPATH="/tmp/serve_$(whoami)${UID}_$$"
+SERVEPATH=
+
+if ! command -v "$HTTP_SERVER_COMMAND" &> /dev/null && [[ ! ( -f "$HTTP_SERVER_COMMAND" && -x "$HTTP_SERVER_COMMAND" ) ]]; then
+	pusage "Can't find http-server"
+	exit 1
+fi
+
+while [[ $# -gt 0 ]]; do
+	case "$1" in
+		-a|--address)
+			ADDRESS=$2
+			shift 2
+			;;
+		-p|--port)
+			PORT=$2
+			shift 2
+			;;
+		-f|--file)
+			SINGLE=1
+			shift 1
+			;;
+		-*)
+			pusage "Unknown flag: $1"
+			exit 1
+			;;
+		*)
+			if [ -n "$SERVEPATH" ]; then
+				pusage "Too many positional arguments"
+				exit 1
+			fi
+
+			SERVEPATH=$1
+			shift 1
+			;;
+	esac
+done
+
+if [ -z "$SERVEPATH" ]; then
+	if [ -n "$SINGLE" ]; then
+		pusage "Must include file path when serving a single file"
+		exit 1
+	fi
+
+	SERVEPATH="."
+else
+	if [ -z "$SINGLE" ] && [ ! -d "$SERVEPATH" ]; then
+		pusage "Target '$SERVEPATH' is a single file, add -f|--file flag to serve"
+		exit 1
+	fi
+fi
+
+if [ -n "$SINGLE" ]; then
+	link="http://$ADDRESS:$PORT"
+	printf "Serving single file %s\n" "$SERVEPATH"
+
+	mkdir -p "$SINGLEPATH"
+	ln -sf "$(realpath "$SERVEPATH")" "$SINGLEPATH/index.html"
+
+	trap 'rm -rf "$SINGLEPATH"' EXIT INT TERM
+	exec $HTTP_SERVER_COMMAND "$SINGLEPATH" -a "$ADDRESS" -p "$PORT"
+else
+	trap 'rm -rf "$SINGLEPATH"' EXIT INT TERM
+	exec $HTTP_SERVER_COMMAND "$SERVEPATH" -a "$ADDRESS" -p "$PORT"
+fi
