@@ -6,6 +6,7 @@ These are a set of well documented and organized configuration files for Ubuntu/
 
 - A neovim config to emulate an IDE with intuitive controls
 - A kitty config that seamlessly links to neovim
+- A `Binaries` folder filled with a ton of useful goodies (`serve-to-http`, `backup`, etc)
 - **COMING SOON:** Kitty-compatible input method setup for Japanese
 - A healthy list of aliases and bash aliases/functions
 - Simple `keyd` binds
