@@ -1,5 +1,0 @@
-set completion-ignore-case on
-set completion-map-case on
-set match-hidden-files on
-set show-all-if-ambiguous on
-set show-all-if-unmodified on

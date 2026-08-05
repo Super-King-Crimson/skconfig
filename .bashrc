@@ -1,30 +1,14 @@
-### For WSL
-if [ -n "$WSL_DISTRO_NAME" ]; then
-	export win="/mnt/c/Users/winskc/"
-	alias xclip=clip.exe
-else
-	alias xclip='xclip -selection clipboard'
+### Exports
+mkdir -p "$HOME/.local/bin"
+export PATH="$HOME/.local/bin:$PATH"
+export NVM_DIR="$HOME/.nvm"
+export NVM_BIN="$HOME/.nvmbin"
+
+# for npm i -g installs (and node) being available globally without doing any bs
+if [ -s "$NVM_BIN" ] ; then
+	export PATH="$(cat "$NVM_BIN"):$PATH"
 fi
 
-
-
-### Lazy loads
-nvm () { __lazy_nvm "$@" && nvm "$@"; }
-node () { __lazy_nvm "$@" && node "$@"; }
-npm () { __lazy_nvm "$@" && npm "$@"; }
-npx () { __lazy_nvm "$@" && npx "$@"; }
-
-__lazy_nvm() {
-	unset -f __lazy_nvm
-	unset -f nvm node npm npx
-
-	[ -s "$NVM_DIR/nvm.sh" ] && builtin source "$NVM_DIR/nvm.sh"
-	[ -s "$NVM_DIR/bash_completion" ] && builtin source "$NVM_DIR/bash_completion"
-}
-
-
-
-### Directory shortcuts and settings
 export dt="$HOME/Desktop"
 export dl="$HOME/Downloads"
 export dc="$HOME/Documents"
@@ -36,21 +20,50 @@ export so="$HOME/src"
 export va="$HOME/Vault"
 export nts="$HOME/Documents/notes"
 export bin="$HOME/.local/bin"
-export rc="$HOME/.bashrc"
 
 export EDITOR=nvim
-export SUDO_EDITOR="$EDITOR"
+export SUDO_EDITOR="env XDG_CONFIG_HOME=$HOME/.config XDG_DATA_HOME=$HOME/.local/share XDG_STATE_HOME=$HOME/.local/state XDG_CACHE_HOME=$HOME/.cache nvim"
 export TERMINAL="kitty"
+export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 export GPG_TTY=$(tty)
 
-# for use with nvim (idk why you have to wrap it in a shell but hey it works now)
+# man with nvim
 export MANPAGER="sh -c 'nvim +Man!'"
-
-export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
 # I alt+f4 out of windows so much so i'm writing every command
 export PROMPT_COMMAND="history -a"
 
+
+
+### Only continue if not running interactively
+# undo lazy loading so login shells can get all the goodies
+case $- in *i*) ;; *) return ;; esac
+
+
+
+### Lazy loads
+nvm () { __lazy_nvm nvm "$@"; }
+node () { __lazy_nvm node "$@"; }
+npm () { __lazy_nvm npm "$@"; }
+npx () { __lazy_nvm npx "$@"; }
+
+__lazy_nvm() {
+	unset -f __lazy_nvm nvm node npm npx
+
+	# load nvm
+	[ -s "$NVM_DIR/nvm.sh" ] && builtin source "$NVM_DIR/nvm.sh"
+	[ -s "$NVM_DIR/bash_completion" ] && builtin source "$NVM_DIR/bash_completion"
+
+	# store the default nvm binpath so we can attach it to our $PATH in a non-interactive session
+	dirname "$(nvm which default)" > "$NVM_BIN"
+
+	# Instantly execute whatever command initiated the trigger block
+	$@
+}
+
+
+
+### Shell options
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
 HISTCONTROL=ignoreboth
@@ -59,50 +72,68 @@ HISTFILESIZE=2000
 
 # you can use ** in glob to recurse into directories
 shopt -s globstar
+
 # automatically updates window size
 shopt -s checkwinsize
 shopt -s histappend
+
+# dollar signs for cd shortcuts
 shopt -u cdable_vars
 
+# case insensitive autocomplete
+bind "set completion-ignore-case on"
 
+# Colors
+set_PS1() {
+	local boldblack='\[\033[01;30m\]'
+	local boldred='\[\033[01;31m\]'
+	local boldgreen='\[\033[01;32m\]'
+	local boldyellow='\[\033[01;33m\]'
+	local boldblue='\[\033[01;34m\]'
+	local boldmagenta='\[\033[01;35m\]'
+	local boldcyan='\[\033[01;36m\]'
+	local boldwhite='\[\033[01;37m\]'
+	local reset='\[\033[00m\]'
 
-### Only continue if not running interactively
-case $- in *i*) ;; *) return;; esac
+	local username_color=$boldgreen
+	local hostname_color=$boldcyan
+	local directory_color=$boldblue
+	local tail_color=$reset
 
+	local color_prompt='yes'
+	local prompt='$'
 
+	local host1="superkingcraptop"
+	local host2="plasma"
 
-### Color
-# set variable identifying the chroot you work in (used in the prompt below)
-if [ -z "${debian_chroot:-}" ]; then
-	if [ -r /etc/debian_chroot ]; then
-		debian_chroot=$(cat /etc/debian_chroot)
-	elif [ -n "${CHROOT_NAME:-}" ]; then
-		debian_chroot="$CHROOT_NAME"
+	local host=$(hostname)
+
+	if [[ $host == $host1 ]] ; then
+		unset host
+	elif [[ $host == $host2 ]]; then
+		unset host
+		username_color=$boldwhite
+		directory_color=$boldmagenta
+	else
+		prompt='='
 	fi
-fi
 
-# Handle terminals that don't support color
-color_prompt='no'
-case "$TERM" in
-	*[si]tty*) color_prompt='yes';;
-	*konsole*) color_prompt='yes';;
-	*gnome*) color_prompt='yes';;
-	*color*) color_prompt='yes';;
-	linux) color_prompt='yes';;
-esac
+	# Handle terminals that don't support color
+	case "$TERM" in
+		dumb) color_prompt='no';;
+		mono) color_prompt='no';;
+		vt100) color_prompt='no';;
+	esac
 
-main_name="superkingcraptop"
-name=$(hostname)
-if [[ $main_name == $name ]] ; then
-	unset name
-fi
+	if [ "$color_prompt" == 'no' ]; then
+		PS1="$\u${name:+ [$name]} \w $prompt "
+		return
+	fi
 
-if [ "$color_prompt" = 'yes' ]; then
-	PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u\[\033[01;36m\]${name:+ [$name]} \[\033[00m\]\[\033[01;34m\]\w \[\033[00m\]\$ '
-else
-	PS1='${debian_chroot:+($debian_chroot)} \u${name:+ [$name]} \w \$ '
-fi
-unset color_prompt
+	PS1="${username_color}\u${hostname_color}${host:+ [$host]} ${directory_color}\w ${tail_color}${prompt} ${reset}"
+}
+set_PS1
+unset set_PS1
 
 
 
@@ -110,11 +141,13 @@ unset color_prompt
 # Ctrl + Backspace: Delete one word backward
 bind '"\C-h": backward-kill-word'
 
-# End + Delete: Delete whole line
-bind '"\e[1;2F": kill-line'
+# Autocomplete (like zsh kinda not really)
+bind 'TAB: complete'
+bind '\C-y: menu-complete'
+bind '"\C-e": menu-complete-backward'
 
-# Autocomplete (like zsh!)
-bind '"\t": menu-complete'
+# Shift + End (for use with keyd)
+bind '"\e[1;2F": kill-whole-line'
 
 # enable programmable completion features
 if [ -f /usr/share/bash-completion/bash_completion ]; then
@@ -139,11 +172,11 @@ alias ':q'="exit"
 alias tree="eza -AT --color=auto --icons=auto"
 alias kssh='kitty +kitten ssh'
 alias pse="ps -e -o pid,command"
+alias rc="$EDITOR $HOME/.bashrc"
 
 alias grep='grep --color=auto -i -P'
-
 # Cool grep options:
-## . matches any character
+## builtin source matches any character
 ## *: 0+, +; 1+ {a,b}: a-b
 ## o (nly match)
 ## n (include line numbers, follow with a | cut -d: -f1 to get them out)
@@ -169,10 +202,14 @@ bat() {
 	batcat --color=always "$@" | less -R
 }
 
+export CLIPBOARD="xclip -sel clipboard"
+if [[ -n "$WSL_DISTRO_NAME" ]]; then
+	CLIPBOARD='clip.exe'
+fi
 clip() {
 	# prints to the terminal
-	tee /dev/tty | xclip
-	printf '\nCopied to clipboard.\n'
+	tee /dev/tty | eval $CLIPBOARD
+	printf '\n^^^\nCopied to clipboard.\n'
 }
 alias copy="clip"
 
@@ -182,14 +219,6 @@ skconfig() {
 builtin source /usr/share/bash-completion/completions/git
 __git_complete skconfig git
 
-
-
-### PATH modification and sources
-mkdir -p ~/.local/bin
-export PATH="$HOME/.local/bin:$PATH"
-export NVM_DIR="$HOME/.nvm"
-. "$HOME/.cargo/env"
-. "$HOME/.rokit/env"
 
 
 ### External functions
@@ -257,3 +286,4 @@ export SAFERM_triggerCount=10
 # If safe-rm is installed, this will do absolutely nothing
 amisafe -i
 # --- SAFEME ALIASES (END) ---
+. "$HOME/.rokit/env"

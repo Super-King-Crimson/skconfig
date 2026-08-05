@@ -8,9 +8,9 @@ These are a set of well documented and organized configuration files for Ubuntu/
 - A kitty config that seamlessly links to neovim
 - **COMING SOON:** Kitty-compatible input method setup for Japanese
 - A healthy list of aliases and bash aliases/functions
-- Several [Input Remapper](https://github.com/sezanzeb/input-remapper) binds
+- Simple `keyd` binds
 - WSL compatibility
-- Guides on how to set up OpenSSH so you can ssh into your Windows desktop
+- Guides on how to set up OpenSSH for Windows and Linux
 
 My goal is to make my configuration understandable and easy to reinstall.
 Feel free to snoop around! Take what you like, leave what's stupid.
@@ -21,24 +21,27 @@ Feel free to snoop around! Take what you like, leave what's stupid.
 - Create your application and icon symlinks for custom `.desktop` files
     - If you don't have the right structure in `~/Pictures/AppImages`, you can copy it from `/usr/share/icons` and simply remove everything but the `hicolor` directory
 ```bash
-mkdir -p ~/.local/bin
 mkdir -p ~/Pictures/AppImages
 mkdir -p ~/Documents/AppImages
-mv -n ~/.local/share/icons/* ~/Pictures/AppImages
-mv -n ~/.local/share/applications/* ~/Documents/AppImages
-rm -rf ~/.local/share/{icons,applications}
+mv -n ~/.local/share/icons/* ~/Pictures/AppImages 2>/dev/null
+mv -n ~/.local/share/applications/* ~/Documents/AppImages 2>/dev/null
+rm -rf ~/.local/share/{icons,applications} 2>/dev/null
 ln -fs ~/Pictures/AppImages ~/.local/share/icons
 ln -fs ~/Documents/AppImages ~/.local/share/applications
 ```
 - You also might as well get neovim now:
 ```bash
-rm ./nvim-linux-x86_64.appimage 2>/dev/null
-wget https://github.com/neovim/neovim/releases/download/v0.12.4/nvim-linux-x86_64.appimage
-chmod +x ./nvim-linux-x86_64.appimage
-./nvim-linux-x86_64.appimage --appimage-extract
-mv squashfs-root ~/.local/bin/neovim
-ln -fs ~/.local/bin/neovim/usr/bin/nvim ~/.local/bin/nvim
-rm ./nvim-linux-x86_64.appimage
+sudo apt install curl wget
+```
+```bash
+mkdir -p ~/.local/bin
+cd ~/.local/bin
+rm -rf nvim nvim-linux*
+# replace with architecture
+wget https://github.com/neovim/neovim/releases/download/stable/nvim-linux-x86_64.tar.gz
+tar -xf *.tar*
+rm *.tar*
+ln -sf ~/.local/bin/nvim*/bin/nvim ~/.local/bin/nvim
 ```
 - Install [ente auth](https://github.com/ente/ente/releases?q=prerelease%3Afalse+tag%3Aauth-v4) and [set up ssh credentials on github](https://medium.com/@yourfuse/git-authentication-with-ssh-keys-the-fun-way-edd8fb15d023)
 - Run this:
@@ -59,21 +62,59 @@ rm makemesafe.sh
 ```
 
 # Installations
-- [nvm](https://www.nvmnode.com/guide/download.html#nvm-for-linux-ubuntu-mac-nvm-sh)
-    - `nvm install node`
-    - `npm install -g tree-sitter-cli`
-- packages
-    - `sudo apt update`
-    - `sudo apt install curl wget tmux gcc clang git unzip zip bat eza ripgrep xclip xdotool restic htop -y`
-- [rust](https://rustup.rs/)
-- [rokit](https://github.com/rojo-rbx/rokit#installation)
+## Packages
+```bash
+sudo apt update
+sudo apt install sudo curl wget tmux gcc clang git unzip zip bat eza ripgrep xclip xdotool restic htop -y
+```
+
+## Node Version Manager
+```bash
+wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
+nvm install node
+nvm alias default node
+npm install -g tree-sitter-cli
+```
+
+## Rokit
+```bash
+wget -qO- https://raw.githubusercontent.com/rojo-rbx/rokit/main/scripts/install.sh | bash
+```
 - [dotnet](https://learn.microsoft.com/en-us/dotnet/core/install/linux)
 - [parsec](https://parsec.app/downloads)
-- [tailscale](https://tailscale.com/)
-- [Input remapper](https://github.com/sezanzeb/input-remapper#installation)
+- **tailscale**
+```bash
+wget -qO- https://tailscale.com/install.sh | sh
+```
+- **flatpak+flathub**
+```bash
+sudo apt install plasma-discover-backend-flatpak flatpak
+sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+```
+- **keyd**
+```bash
+git clone https://github.com/rvaiya/keyd
+cd keyd
+make && sudo make install
+cd ..
+rm -rf keyd
+sudo systemctl enable --now keyd
 
+sudo ln -fs ~/.config/keyd /etc/keyd
+```
+
+## Kitty
+```bash
+mkdir -p ~/.local/bin
+curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin
+ln -sf ~/.local/kitty.app/bin/kitty ~/.local/kitty.app/bin/kitten ~/.local/bin/
+echo 'kitty.desktop' > ~/.config/xdg-terminals.list
+```
+
+# Installations
+- This is for the more complicated stuff. Setting up ssh, Windows, all the goodies.
 ## Crons
-- Run `crontab -e` and paste this line at the bottom:
+- Run `crontab -e` and paste this line at the bottom.
 ```sh
 * * * * *  /usr/bin/env bash -c 'mkdir -p $HOME/.local/state/cron'
 # Automatic backups (MAKE SURE TO HARDLINK ~/backup.tar.gpg TO ~/Binaries/ AND EXTRACT IT)
@@ -157,20 +198,10 @@ sudo systemctl restart ssh
 - Open `about:config` and set the following settings
 ```
 ui.key.menuAccessKey = 0
-general.smoothScroll = false
 ```
-- Then run this and relogin
+- Then, if smooth scroll isn't working, run this and relogin
 ```bash
 echo export MOZ_USE_XINPUT2=1 | sudo tee /etc/profile.d/use-xinput2.sh 
-```
-
-## Kitty
-- Run this. If you pulled the github files down before this, kitty should already be ready to go
-```bash
-mkdir -p ~/.local/bin
-curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin
-ln -sf ~/.local/kitty.app/bin/kitty ~/.local/kitty.app/bin/kitten ~/.local/bin/
-echo 'kitty.desktop' > ~/.config/xdg-terminals.list
 ```
 
 ## Input Method/Mozc + Kitty
@@ -208,15 +239,6 @@ URIs: uri
 Suites: suite
 Components: [component1] [component2] [...]
 allow-insecure: true
-```
-
-## Input remapper
-- Run this:
-```bash
-rm ./input-remapper-2.2.0.deb 2>/dev/null
-wget https://github.com/sezanzeb/input-remapper/releases/download/2.2.0/input-remapper-2.2.0.deb
-sudo dpkg -i ./input-remapper-2.2.0.deb
-rm ./input-remapper-2.2.0.deb*
 ```
 
 ## ILab setup for rutgers
@@ -323,7 +345,6 @@ Proton Options > Proton version: anything
 - ***Note:*** if the notifications get annoying, go to `~/.config/steamtinkerlaunch/global.conf` and set `USENOTIFIER="0"`
 
 ## Retired
-- tmux
 - vscode(ium)
 - wondershaper
 - Git Credential Manager
@@ -334,6 +355,7 @@ Proton Options > Proton version: anything
     - Broke `man` for some reason
 - neovide
     - Replaced by kitty
-- steam, discord
+- steam
     - just get it on windows guy
-
+- input remapper
+    - replaced with keyd, wasn't working on kde
