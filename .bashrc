@@ -26,6 +26,7 @@ export so="$HOME/src"
 export va="$HOME/Vault"
 export nts="$HOME/Documents/notes"
 export bin="$HOME/.local/bin"
+export auto="$HOME/.config/autostart"
 
 export EDITOR=nvim
 export SUDO_EDITOR="env XDG_CONFIG_HOME=$HOME/.config XDG_DATA_HOME=$HOME/.local/share XDG_STATE_HOME=$HOME/.local/state XDG_CACHE_HOME=$HOME/.cache nvim"
@@ -113,19 +114,19 @@ set_PS1() {
 	local color_prompt='yes'
 	local prompt='$'
 
-	local host1="superkingcraptop"
+	local host1="cinnamint"
 	local host2="plasma"
 
 	local host=$(hostname)
 
 	if [[ $host == $host1 ]] ; then
+		username_color=$boldcyan
+		directory_color=$boldblue
 		unset host
 	elif [[ $host == $host2 ]]; then
-		unset host
 		username_color=$boldwhite
 		directory_color=$boldmagenta
-	else
-		prompt='='
+		unset host
 	fi
 
 	# Handle terminals that don't support color
