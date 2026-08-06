@@ -297,4 +297,3 @@ export SAFERM_triggerCount=10
 # If safe-rm is installed, this will do absolutely nothing
 amisafe -i
 # --- SAFEME ALIASES (END) ---
-. "$HOME/.rokit/env"

@@ -17,6 +17,3 @@ if [ -n "$BASH_VERSION" ]; then
 	touch .bashrc
 	. "$HOME/.bashrc"
 fi
-
-# if running zsh
-# TODO:

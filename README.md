@@ -78,6 +78,11 @@ nvm alias default node
 npm install -g tree-sitter-cli
 ```
 
+## Rust
+```bash
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+```
+
 ## Rokit
 ```bash
 wget -qO- https://raw.githubusercontent.com/rojo-rbx/rokit/main/scripts/install.sh | bash
@@ -101,10 +106,12 @@ git clone https://github.com/rvaiya/keyd
 cd keyd
 make && sudo make install
 cd ..
-rm -rf keyd
+/bin/rm -rf keyd
 sudo systemctl enable --now keyd
 
+sudo /bin/rm -rf /etc/keyd
 sudo ln -fs ~/.config/keyd /etc/keyd
+sudo keyd reload
 ```
 
 ## Kitty

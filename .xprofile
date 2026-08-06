@@ -1,1 +1,2 @@
-builtin source $HOME/.profile
+. "$HOME/.profile"
+. "$HOME/.bashrc"
