@@ -67,7 +67,7 @@ rm makemesafe.sh
 ## Packages
 ```bash
 sudo apt update
-sudo apt install sudo curl wget tmux gcc clang git unzip zip bat eza ripgrep xclip xdotool restic htop -y
+sudo apt install openssh-server openssh-client sshfs sudo curl wget tmux gcc clang git unzip zip bat eza ripgrep xclip xdotool restic htop -y
 ```
 
 ## Node Version Manager

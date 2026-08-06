@@ -22,14 +22,18 @@ export pc="$HOME/Pictures"
 export vd="$HOME/Videos"
 export as="$HOME/Assets"
 export bn="$HOME/Binaries"
+export pb="$HOME/Public"
+export rem="$HOME/Public/remote"
 export so="$HOME/src"
 export va="$HOME/Vault"
 export nts="$HOME/Documents/notes"
 export bin="$HOME/.local/bin"
 export auto="$HOME/.config/autostart"
+mkdir -p $dt $dl $dc $pc $vd $as $bn $pb $rem $so $va $nts $bin $auto
 
-export EDITOR=nvim
-export SUDO_EDITOR="env XDG_CONFIG_HOME=$HOME/.config XDG_DATA_HOME=$HOME/.local/share XDG_STATE_HOME=$HOME/.local/state XDG_CACHE_HOME=$HOME/.cache nvim"
+export EDITOR="env XDG_CONFIG_HOME=$HOME/.config XDG_DATA_HOME=$HOME/.local/share XDG_STATE_HOME=$HOME/.local/state XDG_CACHE_HOME=$HOME/.cache $(which nvim)"
+export VISUAL="$EDITOR"
+export SUDO_EDITOR="$EDITOR"
 export TERMINAL="kitty"
 export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 export GPG_TTY=$(tty)
@@ -185,6 +189,21 @@ alias kssh='kitty +kitten ssh'
 alias pse="ps -e -o pid,command"
 alias rc="$EDITOR $HOME/.bashrc"
 
+remmount() {
+	local ssh_path="$1"
+	shift 1
+
+	local dir_path="$1"
+	shift 1
+
+    if [ "$dir_path" == -* ] || [ -z "$dir_path" ]; then
+		dir_path="$rem"
+	fi
+
+	echo "Mounting $ssh_path to $dir_path"
+	command sshfs -f -o reconnect,ServerAliveInterval=15,ServerAliveCountMax=3,cache=yes,kernel_cache,compression=no $ssh_path $dir_path $@
+}
+
 alias grep='grep --color=auto -i -P'
 # Cool grep options:
 ## builtin source matches any character
@@ -243,44 +262,6 @@ if compgen -G "$bash_scripts_path/*.bash" >/dev/null; then
 else 
 	echo "Hey where'd your scripts go"
 fi
-
-ilab-mount() {
-	local clean="nop"
-	local MOUNT_DIR="$HOME/Remote"
-
-	fusermount3 -uz "$MOUNT_DIR"
-	ssh -fN ilab
-
-	rclone mount ilab-mount: $MOUNT_DIR \
-		--vfs-cache-mode full \
-		--no-modtime \
-		--no-checksum \
-		--vfs-write-back 0s \
-		--vfs-cache-max-age 24h \
-		--vfs-cache-max-size 32G \
-		--dir-cache-time 1s \
-		--attr-timeout 1s \
-		--vfs-read-ahead 256M \
-		--vfs-fast-fingerprint \
-		--buffer-size 32M \
-		"$@" &>/dev/null &
-	local RCLONE_PID="$!"
-
-	cleanup() {
-		[[ $clean == "yep" ]] && return
-		clean="yep"
-
-		fusermount3 -uz "$MOUNT_DIR" 2>/dev/null
-		kill "$RCLONE_PID" 2>/dev/null
-		ssh -O exit ilab 2>/dev/null
-
-		echo "$MOUNT_DIR"
-	}
-
-trap cleanup EXIT
-ssh ilab
-cleanup
-}
 
 # --- SAFEME ALIASES (START) ---
 if [ -f /usr/local/bin/safe-rm ]; then
