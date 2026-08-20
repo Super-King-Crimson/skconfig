@@ -52,9 +52,8 @@ vim.api.nvim_create_autocmd("VimLeave", {
         "--match",
         "env:KITTYNVIM_SOCKET",
       }
-      local result = vim.system(command):wait()
-      error(result.stderr)
-      error(result.stdout)
+
+      vim.system(command)
     end
   end
 })
