@@ -118,8 +118,8 @@ set_PS1() {
 	local color_prompt='yes'
 	local prompt='$'
 
-	local host1="cinnamint"
-	local host2="plasma"
+	local host1="server"
+	local host2="11yochild"
 
 	local host=$(hostname)
 
