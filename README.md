@@ -122,8 +122,62 @@ ln -sf ~/.local/kitty.app/bin/kitty ~/.local/kitty.app/bin/kitten ~/.local/bin/
 echo 'kitty.desktop' > ~/.config/xdg-terminals.list
 ```
 
-# Installations
-- This is for the more complicated stuff. Setting up ssh, Windows, all the goodies.
+# Goodies
+- This is for the more complicated stuff. Setting up ssh, Windows, encryption, all that jazz.
+
+## Dual Booting
+- Just get systemd bro. It's incredibly simple!
+- TODO: actually put a guide here
+
+## Encryption with TPM2.0
+- If you like having an encrypted laptop but don't like typing two passwords, this is for you!
+- First off, backup all your files and settings and reinstall your OS. You can also just encrypt it in place, but there's a lot of risk with that.
+- Create a lenient password because we're going to generate a better one later.
+- Once you've done that, set up `systemd-boot` if it isn't already set up. You can't use TPM2.0 without systemd
+    - The installation will heavily depend on your OS, so it is encouraged to use an LLM for this.
+- Next, install the necessary tools, and verify that your device can see your TPM chip:
+```bash
+sudo apt install tpm2-openssl tpm2-tools
+sudo cat /sys/class/tpm/tpm0/tpm_version_major   # should output 2
+```
+- Now, find your encrypted partition (not the mapped decrypted one, the base encrypted one) and run this to link it to the TPM:
+```bash
+sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs="1+7" /dev/YOUR-DEVICE-HERE
+```
+- Here, the 1+7 means motherboard configuration + secure boot status (must be enabled)
+- Now, if you don't have it installed, use `dracut` to generate an `initramfs` that loads the TPM drivers early and read them to unlock your computer.
+```bash
+sudo apt install dracut-core dracut -y
+sudo dracut -f --regenerate-all
+```
+- If this doesn't work, log in as root (using `sudo -i`), set the proper systemd layout rule, and delete all previous versions of the kernel in your bootloader. In Debian, you'd do this like so:
+```bash
+# root
+sudo mkdir -p /etc/kernel
+echo "layout=bls" | sudo tee /etc/kernel/config
+
+cd /boot/efi/$(cat /etc/machine-id)
+rm -rf ./*
+
+kernel-install add $(uname -r) /boot/vmlinuz-$(uname -r)
+
+logout
+```
+- Almost done! Now let's update `/etc/crypttab` so it knows about TPM.
+- Add `,tpm2-device=auto` to the end of your crypt tab options, and we're done!
+```bash
+sudoedit /etc/crypttab
+```
+- Now let's make a secure password and switch our password to that
+```bash
+openssl rand -base64 32 | tee LUKSKEY
+cat LUKSKEY | xclip -sel clipboard
+sudo cryptsetup luksChangeKey /dev/YOUR-DRIVE
+# type old key
+# paste new key
+```
+- ***Make sure to save `LUKSKEY` to another safe location so you don't get locked out of your drive!***
+
 ## Crons
 - Run `crontab -e` and paste this line at the bottom.
 ```sh
