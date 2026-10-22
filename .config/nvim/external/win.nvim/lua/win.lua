@@ -68,8 +68,8 @@ M.defaultOptions = {
     ["<C-x><C-s>"] = { mode = { "", "!", "t", }, rhs = function() M.switchWindowType() end, },
     ["<C-x><C-q>"] = { mode = { "", "!", "t", }, rhs = function() M.deleteWindow(M.getNameFromWinid(vim.api.nvim_get_current_win())) end, },
     ["<C-x><C-r>"] = { mode = { "", "!", "t", }, rhs = function() M.renameWindowFromInput() end },
-    ["<C-Left>"]   = { mode = { "", "!", "t", }, rhs = function() M.switchToPrevFloat() end, },
-    ["<C-Right>"]  = { mode = { "", "!", "t", }, rhs = function() M.switchToNextFloat() end, },
+    ["<C-Down>"]   = { mode = { "", "!", "t", }, rhs = function() M.switchToPrevFloat() end, },
+    ["<C-Up>"]  = { mode = { "", "!", "t", }, rhs = function() M.switchToNextFloat() end, },
     ["<C-q>"]      = { mode = "t", rhs = function() M.toggleWindow() end, },
   },
 }
