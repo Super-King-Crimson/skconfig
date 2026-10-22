@@ -31,6 +31,10 @@ export bin="$HOME/.local/bin"
 export auto="$HOME/.config/autostart"
 mkdir -p $dt $dl $dc $pc $vd $as $bn $pb $rem $so $va $nts $bin $auto
 
+if [ -e /mnt/c ]; then
+	export win="/mnt/c/Users/skc"
+fi
+
 export EDITOR="env XDG_CONFIG_HOME=$HOME/.config XDG_DATA_HOME=$HOME/.local/share XDG_STATE_HOME=$HOME/.local/state XDG_CACHE_HOME=$HOME/.cache $(which nvim)"
 export VISUAL="$EDITOR"
 export SUDO_EDITOR="$EDITOR"
