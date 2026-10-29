@@ -75,7 +75,7 @@ sudo apt install openssh-server openssh-client sshfs sudo curl wget tmux gcc cla
 wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
 nvm install node
 nvm alias default node
-npm install -g tree-sitter-cli
+npm install -g --allow-scripts=tree-sitter-cli tree-sitter-cli
 ```
 
 ## Rust
