@@ -32,7 +32,7 @@ ln -fs ~/Documents/AppImages ~/.local/share/applications
 ```
 - You also might as well get neovim now:
 ```bash
-sudo apt install curl wget
+sudo apt install sudo curl wget git
 ```
 ```bash
 mkdir -p ~/.local/bin
@@ -64,10 +64,38 @@ rm makemesafe.sh
 ```
 
 # Installations
+## Minecraft Server
+```bash
+sudo apt install openjdk-25-jdk
+java -Xmx4G -Xms4G -jar server.jar nogui
+```
+
+## fstab
+```bash
+# /etc/fstab: static file system information.
+#
+# Use 'blkid' to print the universally unique identifier for a
+# device; this may be used with UUID= as a more robust way to name devices
+# that works even if disks are added and removed. See fstab(5).
+#
+# systemd generates mount units based on this file, see systemd.mount(5).
+# Please run 'systemctl daemon-reload' after making changes here.
+#
+# <file system> <mount point>   <type>  <options>       <dump>  <pass>
+/dev/mapper/sda3_crypt /               btrfs   defaults,noatime,compress=zstd,subvol=@rootfs 0       0
+# swapfile
+/dev/mapper/sda3_crypt /swap btrfs defaults,noatime,subvol=@swap 0 0
+/swap/swapfile none swap defaults 0 0
+# /boot was on /dev/sda1 during installation
+UUID=??? /boot           ext4    defaults        0       2
+# /boot/efi was on /dev/sda2 during installation
+UUID=???  /boot/efi       vfat    umask=0077      0       1
+```bash
+
 ## Packages
 ```bash
 sudo apt update
-sudo apt install openssh-server openssh-client sshfs sudo curl wget tmux gcc clang git unzip zip bat eza ripgrep xclip xdotool restic htop -y
+sudo apt install openssh-server openssh-client sshfs sudo curl wget tmux gcc make clang git unzip zip bat eza ripgrep xclip xdotool restic htop -y
 ```
 
 ## Node Version Manager
