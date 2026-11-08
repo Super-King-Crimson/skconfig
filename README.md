@@ -1,61 +1,114 @@
 # Introduction
-Welcome to skc's configuration directory!
+- Hey there! These are my dotfiles :)
+    - second iteration because i accidentally leaked my personal email on the other one :skull:
+- I've actually gone to special lengths to make my config easy to understand, beginner friendly, and quick to setup on a new device.
+- This guide assumes you are using ***Debian***, but most stuff should work for all linux distros.
 
-I've actually gone to special lengths to make it so that anyone could copy my configuration, no matter what.
-These are a set of well documented and organized configuration files for Ubuntu/Debian-based systems (although they can easily be adapted to any distro), and includes:
-
-- A neovim config to emulate an IDE with intuitive controls
-- A kitty config that seamlessly links to neovim
-- A `Binaries` folder filled with a ton of useful goodies (`serve-to-http`, `backup`, etc)
-- **COMING SOON:** Kitty-compatible input method setup for Japanese
-- A healthy list of aliases and bash aliases/functions
-- Simple `keyd` binds
+## Features
+- Neovim config to emulate an IDE with intuitive controls
 - WSL compatibility
-- Guides on how to set up OpenSSH for Windows and Linux
-
-My goal is to make my configuration understandable and easy to reinstall.
-Feel free to snoop around! Take what you like, leave what's stupid.
+- tons of `bash` aliases and functions
+- [kitty](https://sw.kovidgoyal.net/kitty/) config that seamlessly links to neovim
+- [keyd](https://github.com/rvaiya/keyd) binds
+- Useful scripts (see the `Binaries` folder)
+- Tons of other [goodies](#Goodies)!
+---
+- My goal is to make my configuration understandable and easy to reinstall.
+- Feel free to snoop around! Take what you like, leave what's stupid.
 
 # Getting Started
-- Note: The following installation guide assumes you are skc. File organization is done to their preference. Feel free to switch things around.
-    - If you are skc, pull down your data from Backblaze B2 first so the symlinks we will create later have somewhere to go.
-- Create your application and icon symlinks for custom `.desktop` files
-    - If you don't have the right structure in `~/Pictures/AppImages`, you can copy it from `/usr/share/icons` and simply remove everything but the `hicolor` directory
+## Optional: barebones Debian setup
+- If you are setting up a Debian server or otherwise have a barebones install without internet or other packages, we have extra work to do.
+- This assumes you are logged in as root (`sudo -i` or `su -`).
+
+### Internet
+- First we gotta find the name linux gave to our wifi chip (its ***Network Interface Name***):
 ```bash
-mkdir -p ~/Pictures/AppImages
-mkdir -p ~/Documents/AppImages
-mv -n ~/.local/share/icons/* ~/Pictures/AppImages 2>/dev/null
-mv -n ~/.local/share/applications/* ~/Documents/AppImages 2>/dev/null
-rm -rf ~/.local/share/{icons,applications} 2>/dev/null
-ln -fs ~/Pictures/AppImages ~/.local/share/icons
-ln -fs ~/Documents/AppImages ~/.local/share/applications
+ip link show
 ```
-- You also might as well get neovim now:
+- It should start with a w.
+- Now, we gotta connect to the internet. In debian that's controlled with `/etc/network/interfaces`
+- Ensure this is in the file:
+```
+allow-hotplug <INTERFACE-NAME>
+iface <INTERFACE-NAME> inet dhcp
+    wpa-ssid <WIFI-CONNECTION-NAME>
+    wpa-psk <WIFI-PASSWORD-HERE>
+```
+- Now apply your changes by bringing the network interface down and up again.
 ```bash
-sudo apt install sudo curl wget git
+ifdown <INTERFACE-NAME> --force
+ifup <INTERFACE-NAME>
 ```
+
+### Essential Packages
+- Let's grab some packages we may not have:
 ```bash
-mkdir -p ~/.local/bin
-cd ~/.local/bin
-rm -rf nvim nvim-linux*
-# replace with architecture
-wget https://github.com/neovim/neovim/releases/download/stable/nvim-linux-x86_64.tar.gz
-tar -xf *.tar*
-rm *.tar*
-ln -sf ~/.local/bin/nvim*/bin/nvim ~/.local/bin/nvim
+apt install sudo tmux curl wget git gnupg -y
 ```
-- Install [ente auth](https://github.com/ente/ente/releases?q=prerelease%3Afalse+tag%3Aauth-v4) and [set up ssh credentials on github](https://medium.com/@yourfuse/git-authentication-with-ssh-keys-the-fun-way-edd8fb15d023)
-    - if prompted to make a keyring, encrypt it with the same password you log in with
-- Run this:
+
+### Setting up sudo
+- Now we gotta make sudo work for non-root users.
+    - If you haven't already, run `adduser <USERNAME>` to create a non-root user.
+```bash
+groupadd sudo
+usermod -aG sudo skc # replace with <USERNAME>
+```
+- Now, run `visudo` and ensure this line is in the file, uncommented.
+```
+%sudo ALL=(ALL:ALL) ALL
+```
+- Now ensure the user you create actually has the ability to execute commands as sudo.
+- Log in as the user by doing `su <USERNAME>`, then execute a sudo command.
+- If it succeeds, go ahead and lock the root account. We don't need it anymore (use `sudo -i` to login as root instead)!
+```bash
+sudo passwd -l root
+logout
+```
+
+# Downloads and Installations
+- To quickly download and install these dotfiles, run the following:
 ```bash
 cd
-git clone --no-checkout git@github.com:Super-King-Crimson/skconfig.git
+git clone --no-checkout https://github.com/Super-King-Crimson/skconfig.git
 mv skconfig/.git ./
 rm -rf skconfig
 git reset --hard HEAD
 mv .git .skconfig
 ```
-- Then to make yourself immune to `rm -rf` mishaps, run this
+- Now restart your shell.
+
+## APT packages
+- First, add `contrib non-free` to your repository in `/etc/apt/sources.list`
+```
+deb ... <DEBIAN-VERSION> main contrib non-free ...
+deb-src ... <DEBIAN-VERSION> main contrib non-free ...
+```
+- Then, enable i386 architecture:
+```bash
+sudo dpkg --add-architecture i386
+```
+- Upgrade all your current packages:
+```bash
+sudo apt update && sudo apt upgrade -y
+```
+- Now let's grab our pacakges!
+```bash
+sudo apt install gnupg curl wget tmux openssh-server openssh-client sshfs gcc make clang unzip zip bat eza ripgrep xclip xdotool restic htop steam steamcmd -y
+```
+
+## Node Version Manager
+```bash
+wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
+```
+- Then, to install:
+```bash
+nvm install node && nvm alias default node
+npm install -g --allow-scripts=tree-sitter-cli tree-sitter-cli
+```
+- To fully set this up, run `nvm`, close your shell, open it, and run `nvm` again.
+
+## safe-rm
 ```bash
 curl -sSL https://github.com/Super-King-Crimson/safe-rm/releases/download/v0.0.1/makemesafe.sh -o makemesafe.sh
 chmod +x makemesafe.sh
@@ -63,47 +116,27 @@ sudo ./makemesafe.sh
 rm makemesafe.sh
 ```
 
-# Installations
+## Neovim
+```bash
+mkdir -p ~/.local/bin
+cd ~/.local/bin
+rm -rf nvim nvim-linux*
+# replace with architecture
+wget https://github.com/neovim/neovim/releases/download/stable/nvim-linux-x86_64.tar.gz
+tar -xf nvim*.tar*
+rm nvim*.tar*
+ln -sf ~/.local/bin/nvim*/bin/nvim ~/.local/bin/nvim
+```
+
 ## Minecraft Server
+- Grab the MC server version from https://mcversions.net:
 ```bash
 sudo apt install openjdk-25-jdk
-java -Xmx4G -Xms4G -jar server.jar nogui
+java -Xms4G -Xmm4G -jar server.jar --nogui
 ```
-
-## fstab
+- Then install and run `playit` to set up:
 ```bash
-# /etc/fstab: static file system information.
-#
-# Use 'blkid' to print the universally unique identifier for a
-# device; this may be used with UUID= as a more robust way to name devices
-# that works even if disks are added and removed. See fstab(5).
-#
-# systemd generates mount units based on this file, see systemd.mount(5).
-# Please run 'systemctl daemon-reload' after making changes here.
-#
-# <file system> <mount point>   <type>  <options>       <dump>  <pass>
-/dev/mapper/sda3_crypt /               btrfs   defaults,noatime,compress=zstd,subvol=@rootfs 0       0
-# swapfile
-/dev/mapper/sda3_crypt /swap btrfs defaults,noatime,subvol=@swap 0 0
-/swap/swapfile none swap defaults 0 0
-# /boot was on /dev/sda1 during installation
-UUID=??? /boot           ext4    defaults        0       2
-# /boot/efi was on /dev/sda2 during installation
-UUID=???  /boot/efi       vfat    umask=0077      0       1
-```bash
-
-## Packages
-```bash
-sudo apt update
-sudo apt install openssh-server openssh-client sshfs sudo curl wget tmux gcc make clang git unzip zip bat eza ripgrep xclip xdotool restic htop -y
-```
-
-## Node Version Manager
-```bash
-wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
-nvm install node
-nvm alias default node
-npm install -g --allow-scripts=tree-sitter-cli tree-sitter-cli
+curl -fsSL https://packages.playit.gg/install.sh | bash
 ```
 
 ## Rust
@@ -115,20 +148,27 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 ```bash
 wget -qO- https://raw.githubusercontent.com/rojo-rbx/rokit/main/scripts/install.sh | bash
 ```
-- [dotnet](https://learn.microsoft.com/en-us/dotnet/core/install/linux)
-- [parsec](https://parsec.app/downloads)
-- **tailscale**
+
+## Dotnet
+- https://learn.microsoft.com/en-us/dotnet/core/install/linux
+
+## Parsec
+- https://parsec.app/downloads
+
+## Tailscale
 ```bash
 wget -qO- https://tailscale.com/install.sh | sh
 ```
-- **flatpak+flathub**
+
+## Flatpak
 ```bash
 # or gnome backend
-sudo apt install plasma-discover-backend-flatpak flatpak
+sudo apt install flatpak
 flatpak remote-delete flathub
 sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 ```
-- **keyd**
+
+## keyd
 ```bash
 git clone https://github.com/rvaiya/keyd
 cd keyd
@@ -152,6 +192,28 @@ echo 'kitty.desktop' > ~/.config/xdg-terminals.list
 
 # Goodies
 - This is for the more complicated stuff. Setting up ssh, Windows, encryption, all that jazz.
+
+## Encrypted BTRFS fstab
+```bash
+# /etc/fstab: static file system information.
+#
+# Use 'blkid' to print the universally unique identifier for a
+# device; this may be used with UUID= as a more robust way to name devices
+# that works even if disks are added and removed. See fstab(5).
+#
+# systemd generates mount units based on this file, see systemd.mount(5).
+# Please run 'systemctl daemon-reload' after making changes here.
+#
+# <file system> <mount point>   <type>  <options>       <dump>  <pass>
+/dev/mapper/sda3_crypt /               btrfs   defaults,noatime,compress=zstd,subvol=@rootfs 0       0
+# swapfile
+/dev/mapper/sda3_crypt /swap btrfs defaults,noatime,subvol=@swap 0 0
+/swap/swapfile none swap defaults 0 0
+# /boot was on /dev/sda1 during installation
+UUID=??? /boot           ext4    defaults        0       2
+# /boot/efi was on /dev/sda2 during installation
+UUID=???  /boot/efi       vfat    umask=0077      0       1
+```
 
 ## Dual Booting
 - Just get systemd bro. It's incredibly simple!
@@ -287,7 +349,7 @@ KbdInteractiveAuthentication no
 sudo systemctl restart ssh
 ```
 
-## Firefox settings
+## Firefox settings/smooth scroll
 - Open `about:config` and set the following settings
 ```
 ui.key.menuAccessKey = 0
