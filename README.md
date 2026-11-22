@@ -132,7 +132,7 @@ ln -sf ~/.local/bin/nvim*/bin/nvim ~/.local/bin/nvim
 - Grab the MC server version from https://mcversions.net:
 ```bash
 sudo apt install openjdk-25-jdk
-java -Xms4G -Xmm4G -jar server.jar --nogui
+java -Xms2G -Xmx2G -jar server.jar --nogui
 ```
 - Then install and run `playit` to set up:
 ```bash
