@@ -23,13 +23,15 @@ export vd="$HOME/Videos"
 export as="$HOME/Assets"
 export bn="$HOME/Binaries"
 export pb="$HOME/Public"
-export rem="$HOME/Public/remote"
+export mo="$HOME/Mount"
 export so="$HOME/src"
 export va="$HOME/Vault"
 export nts="$HOME/Documents/notes"
 export bin="$HOME/.local/bin"
 export auto="$HOME/.config/autostart"
-mkdir -p $dt $dl $dc $pc $vd $as $bn $pb $rem $so $va $nts $bin $auto
+mkdir -p $dt $dl $dc $pc $vd $as $bn $pb $mo $so $va $nts $bin $auto
+
+
 
 if [ -e /mnt/c ]; then
 	export win="/mnt/c/Users/skc"

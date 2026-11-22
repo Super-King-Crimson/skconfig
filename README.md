@@ -94,7 +94,7 @@ sudo apt update && sudo apt upgrade -y
 ```
 - Now let's grab our pacakges!
 ```bash
-sudo apt install gnupg curl wget tmux openssh-server openssh-client sshfs gcc make clang unzip zip bat eza ripgrep xclip xdotool restic htop steam steamcmd -y
+sudo apt install gnupg curl wget tmux openssh-server openssh-client sshfs gcc make clang unzip zip bat eza ripgrep xclip xdotool restic htop steam steamcmd pass -y
 ```
 
 ## Node Version Manager
