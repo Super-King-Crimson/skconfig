@@ -162,11 +162,12 @@ wget -qO- https://tailscale.com/install.sh | sh
 
 ## Flatpak
 ```bash
-# or gnome backend
+# You could also get a backend so flatpaks work with your distro's software manager (i.e. plasma-discover-backend)
+# i just use flathub.org tho
 sudo apt install flatpak
-flatpak remote-delete flathub
 sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 ```
+- Then log out and log in to make everything exist again.
 
 ## keyd
 ```bash
