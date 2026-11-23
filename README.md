@@ -265,6 +265,16 @@ sudo apt install tpm2-openssl tpm2-tools
 sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs="1+7" /dev/<YOUR-CRYPT-DEVICE>
 ```
 - Here, the 1+7 means motherboard configuration + Secure Boot status.
+- At this point you should probably change your password to something more secure:
+```bash
+sudo cryptsetup luksAddKey /dev/<YOUR-CRYPT-DEVICE>
+# input a secure password, it can be as long as you like
+```
+- And don't forget to remove the old password:
+```bash
+sudo cryptsetup luksRemoveKey /dev/<YOUR-CRYPT-DEVICE>
+# input the insecure password
+```
 
 ## Encrypted BTRFS fstab
 ```bash
