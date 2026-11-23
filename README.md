@@ -192,8 +192,21 @@ ln -sf ~/.local/kitty.app/bin/kitty ~/.local/kitty.app/bin/kitten ~/.local/bin/
 echo 'kitty.desktop' > ~/.config/xdg-terminals.list
 ```
 
+### Input Method
+- ???
+
+## Firefox settings/smooth scroll
+- Open `about:config` and set the following settings
+```
+ui.key.menuAccessKey = 0
+```
+- Then, if smooth scroll isn't working, run this and relogin
+```bash
+echo export MOZ_USE_XINPUT2=1 | sudo tee /etc/profile.d/use-xinput2.sh 
+```
+
 # Goodies
-- This is for the more complicated stuff. Setting up ssh, Windows, encryption, all that jazz.
+- This is for the more complicated stuff. Dualbooting, encryption, all that jazz.
 
 ## Encryption with TPM2.0
 - If you like having an encrypted Linux laptop but don't like typing two passwords, this is for you!
@@ -423,19 +436,6 @@ KbdInteractiveAuthentication no
 sudo systemctl restart ssh
 ```
 
-## Firefox settings/smooth scroll
-- Open `about:config` and set the following settings
-```
-ui.key.menuAccessKey = 0
-```
-- Then, if smooth scroll isn't working, run this and relogin
-```bash
-echo export MOZ_USE_XINPUT2=1 | sudo tee /etc/profile.d/use-xinput2.sh 
-```
-
-## Input Method/Mozc + Kitty
-- ???
-
 ## AppImages
 - **NOTE: DO NOT GET APPIMAGELAUNCHER! IT'S NOT THERE YET**
 - To install an appimage yourself (get the shortcuts and such):
@@ -584,8 +584,6 @@ Proton Options > Proton version: anything
     - Broke `man` for some reason
 - neovide
     - Replaced by kitty
-- steam
-    - just get it on windows guy
 - input remapper
     - replaced with keyd, wasn't working on kde
 
