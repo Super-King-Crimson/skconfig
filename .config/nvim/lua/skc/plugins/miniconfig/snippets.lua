@@ -16,8 +16,6 @@ local global_snippets = vim.fn.stdpath("config") .. "/snippets/global.json"
 local searchDirs = { vim.fn.stdpath("config") .. "/snippets", }
 local ignorePaths = { "disabled" }
 
-
-
 local function getChildrenAbs(path, wildignore)
   if not wildignore then wildignore = false end
 

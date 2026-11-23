@@ -11,7 +11,8 @@
 - [kitty](https://sw.kovidgoyal.net/kitty/) config that seamlessly links to neovim
 - [keyd](https://github.com/rvaiya/keyd) binds
 - Useful scripts (see the `Binaries` folder)
-- Tons of other [goodies](#Goodies)!
+- Encryption guide with TPM2.0 (seamless like Windows!)
+- Tons of other [goodies](#goodies)!
 ---
 - My goal is to make my configuration understandable and easy to reinstall.
 - Feel free to snoop around! Take what you like, leave what's stupid.
@@ -194,6 +195,64 @@ echo 'kitty.desktop' > ~/.config/xdg-terminals.list
 # Goodies
 - This is for the more complicated stuff. Setting up ssh, Windows, encryption, all that jazz.
 
+## Encryption with TPM2.0
+- If you like having an encrypted Linux laptop but don't like typing two passwords, this is for you!
+- The Debian installer actually allows you to encrypt your devices at setup, so to avoid having to be a Linux guru, just backup your important files and reinstall.
+
+### Reinstall notes
+- Make sure to put `/boot` on a 1GiB partition, and make your EFI partition mounted at `/boot/efi` and also make it 1GiB.
+- Then, [set up systemd-boot](#optional-switching-to-systemd-boot-debian), this setup requires it.
+
+### Secure Boot
+- We will have to remove GRUB for this. Run the following:
+```bash
+sudo apt purge --allow-remove-essential grub-common grub-efi-amd64 grub-efi-amd64-bin grub-efi-amd64-signed grub2-common
+sudo apt autoremove --purge
+```
+- Now, run `sudo dpkg-reconfigure systemd-boot`. Now that GRUB is gone, this will generate a shim-signed binary. You can now turn on Secure Boot, everything should work fine.
+
+### Switching to dracut
+- Install `dracut`, an alternative to `initramfs` that loads the TPM drivers early and reads them to unlock your computer.
+    - This probably doesn't mean anything to you (sure as hell doesn't for me). Just follow the instructions.
+    - Make sure you don't lose power. If your computer shuts down at this point your system will become unbootable.
+```bash
+sudo apt install dracut-core dracut -y
+```
+- We have to configure dracut. We will be editing two files, make sure they match exactly.
+- Open up `/etc/crypttab`, and take note of the crypt name (first column) and the UUID.
+- This also assumes you're using ext4.
+    - ***If you're using BTRFS***, add btrfs as a dracut module (don't forget the trailing space!) and add the root options with your root subvolume to `/etc/kernel/cmdline`.
+```bash
+# /etc/dracut.conf.d/setup.conf
+hostonly="yes"
+hostonly_cmdline="no"
+add_dracutmodules+=" systemd systemd-initrd crypt drm "
+```
+```bash
+# /etc/kernel/cmdline
+rd.luks.name=<CRYPT-UUID>=<CRYPT-NAME> root=/dev/mapper/<CRYPTNAME> rw quiet
+```
+- Nearly there. Now we have to regenerate our kernel image with dracut.
+```bash
+cd /boot
+ls
+```
+- For each kernel image you have (`/boot/vm-linuz-KERNEL-VERSION>`), run:
+```bash
+kernel-install add <KERNEL-VERSION> /boot/vmlinuz-<KERNEL-VERSION>
+```
+
+### Enrolling motherboard chip
+- Finally, install the necessary tools to enroll your device. Make sure Secure Boot is on.
+```bash
+sudo apt install tpm2-openssl tpm2-tools
+```
+- Now, find your encrypted partition and run this to link it to the TPM chip on your motherboard:
+```bash
+sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs="1+7" /dev/<YOUR-CRYPT-DEVICE>
+```
+- Here, the 1+7 means motherboard configuration + Secure Boot status.
+
 ## Encrypted BTRFS fstab
 ```bash
 # /etc/fstab: static file system information.
@@ -217,57 +276,71 @@ UUID=???  /boot/efi       vfat    umask=0077      0       1
 ```
 
 ## Dual Booting
-- Just get systemd bro. It's incredibly simple!
-- TODO: actually put a guide here
+- First, ensure you have systemd-boot. You may already have it, but if you're on Debian you start with `GRUB` instead. The following guide will help you switch.
 
-## Encryption with TPM2.0
-- If you like having an encrypted laptop but don't like typing two passwords, this is for you!
-- First off, backup all your files and settings and reinstall your OS. You can also just encrypt it in place, but there's a lot of risk with that.
-- Create a lenient password because we're going to generate a better one later.
-- Once you've done that, set up `systemd-boot` if it isn't already set up. You can't use TPM2.0 without systemd
-    - The installation will heavily depend on your OS, so it is encouraged to use an LLM for this.
-- Next, install the necessary tools, and verify that your device can see your TPM chip:
+### Optional: Switching to systemd-boot (DEBIAN)
+- First, we need to make a `/etc/kernel/cmdline`, which informs `systemd-boot` how our computer is structured and where everything is mounted.
+    - Luckily, the Linux kernel stores the parameters it is passed for this at `/proc/cmdline`, so we can run the following command to do most of the work for us:
 ```bash
-sudo apt install tpm2-openssl tpm2-tools
-sudo cat /sys/class/tpm/tpm0/tpm_version_major   # should output 2
+cat /proc/cmdline >> TEMPFILE
 ```
-- Now, find your encrypted partition (not the mapped decrypted one, the base encrypted one) and run this to link it to the TPM:
+- Now edit `TEMPFILE`, remove anything with `initrd=...` or `BOOT_IMAGE=...`.
+- Now copy it back:
 ```bash
-sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs="1+7" /dev/YOUR-DEVICE-HERE
+sudo mv -f TEMPFILE /etc/kernel/cmdline
 ```
-- Here, the 1+7 means motherboard configuration + secure boot status (must be enabled)
-- Now, if you don't have it installed, use `dracut` to generate an `initramfs` that loads the TPM drivers early and read them to unlock your computer.
+- You should be good to install `systemd-boot` now.
 ```bash
-sudo apt install dracut-core dracut -y
-sudo dracut -f --regenerate-all
+sudo apt update
+sudo apt install systemd-boot efibootmgr
 ```
-- If this doesn't work, log in as root (using `sudo -i`), set the proper systemd layout rule, and delete all previous versions of the kernel in your bootloader. In Debian, you'd do this like so:
-```bash
-# root
-sudo mkdir -p /etc/kernel
-echo "layout=bls" | sudo tee /etc/kernel/config
+- Remember you can run `sudo apt --fix-broken install` and then re-run the first install command if it doesn't work.
+- Reboot to see if systemd works. ***Make sure to turn off Secure Boot***, as Secure Boot will not work with this setup by default.
+- Check [this out](#secure-boot) if you want to keep Secure Boot enabled.
+- Additionally, check [this out](https://www.freedesktop.org/software/systemd/man/latest/loader.conf.html) to see the options for `/boot/efi/loader/loader.conf`.
 
-cd /boot/efi/$(cat /etc/machine-id)
-rm -rf ./*
+### Shrinking your partitions
+- You will need to make some space for your new OS. The easiest way to do this is by getting another ISO image that comes with the `GParted` application (linux mint) and shrinking the large partition using a GUI, but that's too easy. We're Linux users!
+    - Instead, flash Ventoy on a USB, put Arch Linux on it, then boot into it.
 
-kernel-install add $(uname -r) /boot/vmlinuz-$(uname -r)
+#### Shrinking filesystem
+- Shrinking a partition must be done from the inside out. First the filesystem, then any encrypted volumes (if you have any), then the partition itself.
 
-logout
-```
-- Almost done! Now let's update `/etc/crypttab` so it knows about TPM.
-- Add `,tpm2-device=auto` to the end of your crypt tab options, and we're done!
+##### Optional: Shrinking encrypted volume (LUKS)
+- If the partition you want to resize is encrypted with LUKS, you'll have to open and map it:
 ```bash
-sudoedit /etc/crypttab
+cryptsetup open /dev/sdXN cryptroot
 ```
-- Now let's make a secure password and switch our password to that
+- Now proceed, replacing `/dev/sdXN` with `/dev/mapper/cryptroot`.
+---
+
+#### Shrinking filesystem, cont.
+- You can find the partition you want to shrink by running `lsblk -o NAME,SIZE,FSTYPE`. Now mount it to `/mnt`.
 ```bash
-openssl rand -base64 32 | tee LUKSKEY
-cat LUKSKEY | xclip -sel clipboard
-sudo cryptsetup luksChangeKey /dev/YOUR-DRIVE
-# type old key
-# paste new key
+mount /dev/sdXN /mnt
 ```
-- ***Make sure to save `LUKSKEY` to another safe location so you don't get locked out of your drive!***
+- Take note of its size with `df -h /mnt`, then unmount it with `umount /mnt`.
+- Now resize it (leave at least 100GiB for your other OS, but you probably want more).
+    - Additionally, leave yourself a safety buffer so you don't delete any data by accident (so in our case, we could shrink it by 102GiB instead of 100GiB).
+```bash
+e2fsck -f /dev/sdXN # required
+resize2fs /dev/sdXN ???G
+```
+- If using encryption, don't forget to close the crypt here so the block device is no longer in use:
+```bash
+cryptsetup close cryptroot
+```
+
+#### Shrinking partition
+- Now you want to shrink the partition: run `fdisk /dev/sdX`.
+- Remember, you want the partition size to be 2GiB bigger than your filesystem. Be careful!
+```
+p - print partition table (to get size and partition number)
+e - resize partition
+q - quit and discard changes
+w - quit and write changes
+```
+- Now you can do whatever you want with the free space.
 
 ## Crons
 - Run `crontab -e` and paste this line at the bottom.
@@ -515,3 +588,50 @@ Proton Options > Proton version: anything
     - just get it on windows guy
 - input remapper
     - replaced with keyd, wasn't working on kde
+
+## TODO
+### Optional: Encrypting over a drive in use (LUKS)
+- Again, back up important files. Make sure you have a consistent source of power, too.
+- Flash Ventoy onto a drive, put an Arch Linux ISO on it, and boot into it.
+
+#### /efi and /boot
+- First, you probably have to move /boot and /efi off of your root partition, otherwise your system won't even have the tools to decrypt your data.
+- Run `fdisk /dev/sdXN` and enter p to check the partition table.
+    - Our goal is to have a ~1GiB Linux filesystem partition, and a ~1GiB EFI System partition.
+    -  If you don't have those, create them:
+```
+n - add new partition
+p - print partition table
+t - change partition type
+w - write and quit
+q - discard and quit
+```
+- Now create some filesystems so we can write data into them:
+```bash
+mkfs.fat -F 32 /dev/sdXN   # into the newly created EFI system partition
+mkfs.ext4 /dev/sdXN        # into the newly created Linux filesystem partition
+```
+- If you have two EFI system partitions now, mount the one that you didn't just make to `/mnt/efi_old` and the new one to `/mnt/efi`, and copy all the files from old to new.
+```bash
+mkdir -p /mnt/efi_old /mnt/efi
+mount /dev/sdXM /mnt/efi_old
+mount /dev/sdXN /mnt/efi
+# don't forget the -a option, it does system timestamps and everything
+cp -a /mnt/efi_old/. /mnt/efi
+# unmounts everything
+umount -R /mnt
+rm -rf /mnt/*
+```
+- And do the same with the a small EFI system partition if it was a smaller boot partition.
+- Now use `fdisk` to remove the partitions we don't need.
+
+    - Shrink your root partition by 8GiB using [this guide](#shrinking-your-partitions) (so filesystem should shrink by 9GiB).
+- Now run `fdisk`, and create a new 1GiB partition for `/boot`
+- Now, run the following:
+```bash
+cryptsetup reencrypt --encrypt --type luks2 --reduce-device-size 32m /dev/sdXN
+```
+- Confirm, and ensure for the whole process you do not lose power.
+- Once you're done, you have a few more things to do.
+
+- If you don't want to run dangerous commands and dig through system files, reinstall your OS and set up encryption that way. Make sure to create separate 1GiB partitions for `/efi` and `/boot`.
