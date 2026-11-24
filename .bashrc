@@ -125,7 +125,7 @@ set_PS1() {
 	local prompt='$'
 
 	local host1="server"
-	local host2="11yochild"
+	local host2="superkingcraptop"
 
 	local host=$(hostname)
 

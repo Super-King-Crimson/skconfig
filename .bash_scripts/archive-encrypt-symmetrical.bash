@@ -34,7 +34,7 @@ encrypt_archive_symmetrical_gpg() {
 		echo Archive encrypted successfully as $output_name.tar.gpg.
 		echo Please delete the original directory.
 	else
-		echo Failed to encrypt $(realpath folder_path).
+		echo Failed to encrypt $(realpath "$folder_path").
 	fi
 }
 
