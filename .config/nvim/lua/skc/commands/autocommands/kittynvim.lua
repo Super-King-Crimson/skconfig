@@ -1,3 +1,5 @@
+-- deprecated for TMUX!!???
+-- also bc force farewell isn't really a thing anymore
 local augroup = vim.api.nvim_create_augroup("SKC_KittyConnectionAugroup", { clear = true })
 
 local socket = os.getenv("KITTYNVIM_SOCKET")
