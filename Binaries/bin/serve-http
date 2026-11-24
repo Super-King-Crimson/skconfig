@@ -2,13 +2,14 @@
 pusage() {
 	echo "Error: $1" >&2
 	cat << EOF >&2
+
 Usage:
-serve [-a|--address <ADDRESS>] [-p|--port <PORT>] [DIR]
-serve [-f|--file] [...] <FILE>
-
+	serve [-a|--address <ADDRESS>] [-p|--port <PORT>] [DIR]
+	serve [-f|--file] [...] <FILE>
+	
 Ensure you have node, then run the following:
-npm install -g http-server
-
+	npm install -g http-server
+	
 You can pass a path to a local http-server binary by exporting the HTTP_SERVER_COMMAND variable.
 EOF
 }

@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+# MAKE SURE THAT YOUR DEFAULT SSH OPTIONS SETS KEEPALIVEINTERVAL!!! OR ELSE THIS WON'T WORK!!!
+pusage() {
+	echo "Error: $1" >&2
+	cat << EOF >&2
+
+Usage:
+	netmount [sshfs-flags] <PATH> <SSH-CONNECTION>:<PATH>
+EOF
+}
+
+if ! command -v sshfs &> /dev/null; then
+	pusage "Can't find sshfs binary"
+	exit 1
+fi
+
+remote_path=""
+mount_path=""
+skip=false
+for arg in "$@"; do
+	if $skip; then
+		skip=false
+		continue
+	fi
+
+	case "$arg" in
+		-o|-p|-F|-c|-i) skip=true ;;
+		-*) ;;
+		*:*) remote_path="$arg" ;;
+		*) mount_path="$arg" ;;
+	esac
+done
+
+# runs in foreground so it can collect password
+if ! sshfs "$@"; then
+	pusage "SSHFS failed to connect."
+	exit 1
+fi
+
+cleanup() {
+	if fusermount3 -uz "$mount_path" &> /dev/null; then
+		echo "Unmounted $mount_path."
+	fi
+}
+trap cleanup EXIT HUP INT QUIT TERM
+
+echo "$remote_path mounted at $mount_path."
+echo "This will be automatically unmounted once this process exits."
+
+# verify that mountpoint exists every so often
+# MAKE SURE THAT YOUR DEFAULT SSH OPTIONS SETS KEEPALIVEINTERVAL!!!
+while mountpoint -q "$mount_path"; do
+	sleep 1
+done
+
+echo SSHFS connection dropped. >&2
