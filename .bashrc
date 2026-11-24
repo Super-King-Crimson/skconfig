@@ -195,21 +195,6 @@ alias kssh='kitty +kitten ssh'
 alias pse="ps -e -o pid,command"
 alias rc="$EDITOR $HOME/.bashrc"
 
-remmount() {
-	local ssh_path="$1"
-	shift 1
-
-	local dir_path="$1"
-	shift 1
-
-    if [ "$dir_path" == -* ] || [ -z "$dir_path" ]; then
-		dir_path="$rem"
-	fi
-
-	echo "Mounting $ssh_path to $dir_path"
-	command sshfs -f -o reconnect,ServerAliveInterval=15,ServerAliveCountMax=3,cache=yes,kernel_cache,compression=no $ssh_path $dir_path $@
-}
-
 alias grep='grep --color=auto -i -P'
 # Cool grep options:
 ## builtin source matches any character
