@@ -1,6 +1,6 @@
--- don't forget this trailing slash
 local M = {}
 
+-- don't forget this trailing slash is here
 local SESSION_DIR = vim.fn.stdpath("data") .. "/autosessions/"
 
 local defaultSessionName = "latest"

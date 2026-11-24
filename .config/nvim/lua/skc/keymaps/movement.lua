@@ -10,7 +10,7 @@ vim.keymap.set("", "<leader>k", "{", { desc = "Jump up to empty line" })
 -- Better jk (spans wrapped lines)
 vim.keymap.set("", "j", "gj")
 vim.keymap.set("", "k", "gk")
--- Not in operator pending mode (i like my dj) (spans wrapped lines)
+-- Not in operator pending mode so dj still deletes two lines down
 vim.keymap.del("o", "j")
 vim.keymap.del("o", "k")
 

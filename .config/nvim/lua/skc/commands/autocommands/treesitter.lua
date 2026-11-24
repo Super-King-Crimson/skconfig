@@ -1,3 +1,4 @@
+-- enable treesitter by default for the filetypes in pattern
 vim.api.nvim_create_autocmd('FileType', {
   group = vim.api.nvim_create_augroup("SKC_NvimTreesitterStart", { clear = true }),
   pattern = { "markdown", "json", "luau", "bash" },
