@@ -4,6 +4,7 @@ local FORMATTERS_BY_FT = {
   html = { "superhtml" },
   css = { "prettier" },
   luau = { "stylua" },
+  json = { "jq" },
 }
 
 local AUTOFORMAT_DISABLED_FT = {
@@ -30,7 +31,8 @@ local ENSURE_INSTALLED = {
 
   linters = {},
   formatters = {
-    "stylua"
+    "stylua",
+    "jq",
   },
   debuggers = {},
 }

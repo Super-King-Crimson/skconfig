@@ -18,7 +18,7 @@ return {
     'luau-lsp',
     'lsp',
     '--definitions:@roblox=' .. vim.fn.expand("~/src/docs/roblox/globalTypes.d.luau"),
-    '--docs=' .. vim.fn.expand("~/src/docs/roblox/api-docs.json"),
+    '--docs=' .. vim.fn.expand("~/src/docs/roblox/globalTypes-en-us.json"),
   },
   settings = {
     ["luau-lsp"] = {
