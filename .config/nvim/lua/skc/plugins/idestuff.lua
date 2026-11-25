@@ -4,7 +4,7 @@ local FORMATTERS_BY_FT = {
   html = { "superhtml" },
   css = { "prettier" },
   luau = { "stylua" },
-  json = { "prettier" },
+  json = { "json-lsp" },
 }
 
 local AUTOFORMAT_DISABLED_FT = {
