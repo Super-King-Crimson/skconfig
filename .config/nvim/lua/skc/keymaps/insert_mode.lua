@@ -1,5 +1,6 @@
 -- Backspacing and undos
 vim.keymap.set("!", "<C-h>", "<C-w>")
+vim.keymap.set("t", "<C-BS>", "<C-h>")
 vim.keymap.set("i", "<C-h>", "<C-g>u<C-w>")
 
 vim.keymap.set("!", "<C-BS>", "<C-w>")

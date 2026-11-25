@@ -12,6 +12,8 @@
 --- autocmd BufRead,BufNewFile *.luau setf luau
 --- ```
 
+-- get type defs here: https://luau-lsp.pages.dev/type-definitions/globalTypes.None.d.luau
+-- get docs here: https://luau-lsp.pages.dev/api-docs/en-us.json
 ---@type vim.lsp.Config
 return {
   cmd = {
